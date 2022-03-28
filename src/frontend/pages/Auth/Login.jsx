@@ -39,7 +39,7 @@ export function Login() {
                 </button>
               </div>
               <div className="text-center p-1 anchor-text">
-                <a>Create new account</a>
+                <p>Create new account</p>
               </div>
             </div>
           </form>
