@@ -17,7 +17,7 @@ export function Logout() {
           You have successfully logged out
         </div>
         <div className="back-to-home-link">
-          <Link to="/">Go Back to Home</Link>
+          <Link to="/">Go Back</Link>
         </div>
       </section>
     </>
