@@ -27,22 +27,6 @@ export function Login() {
                   required
                 />
               </div>
-              <div className="input-text-group p-1">
-                <div className="pb-05 auth-wrapper-password">
-                  <div>
-                    <input type="checkbox" id="remember" />
-                    <label
-                      className="color-text-grey padding-sm"
-                      forhtml="remember"
-                    >
-                      Remember me
-                    </label>
-                  </div>
-                  <a href="/" className="color-text-secondary">
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
               <div>
                 <button className="btn color-secondary-outline btn-full-width margin-sm">
                   Login with test credentials
