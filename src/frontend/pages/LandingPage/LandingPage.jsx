@@ -1,8 +1,9 @@
 import React from "react";
 import { hero } from "../../assets";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function LandingPage() {
+  const navigate = useNavigate();
   return (
     <>
       <section className="hero-section">
@@ -20,8 +21,15 @@ export function LandingPage() {
             us.
           </p>
           <div className="hero-btn-group">
-            <button className="btn color-primary">Join now</button>
-            <Link to="/home">Already have an account ?</Link>
+            <button
+              className="btn color-primary"
+              onClick={() => navigate("/signup")}
+            >
+              Join now
+            </button>
+            <Link to="/login" className="color-text-secondary">
+              Already have an account ?
+            </Link>
           </div>
         </div>
 

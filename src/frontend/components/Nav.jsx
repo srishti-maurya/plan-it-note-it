@@ -1,18 +1,34 @@
+import { Link } from "react-router-dom";
 import React from "react";
 import { logo } from "../assets";
+import { useAuth } from "../context/auth-context";
 
 export function Nav() {
+  const { isLoggedIn, logoutHandler, navigate } = useAuth();
   return (
     <>
       <div className="navigation-container">
-        <div>
+        <Link to="/">
           <img src={logo} alt="logo" className="logo" />
-        </div>
+        </Link>
         <button className="navigation-sidebar-toggle">
           <i className="fas fa-bars fa-2x"></i>
         </button>
         <div className="navigation-tools">
-          <button className="btn color-secondary-outline btn-sm">Login</button>
+          {isLoggedIn ? (
+            <>
+              <button className="btn btn-sm primary" onClick={logoutHandler}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <button
+              className="btn btn-sm primary"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+          )}
         </div>
       </div>
     </>
