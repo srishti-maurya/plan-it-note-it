@@ -7,6 +7,7 @@ import {
 } from "react";
 import axios from "axios";
 import { useAuth } from "./auth-context";
+import { addNewToast, editToast, deletedToast } from "../utils/toasts";
 
 const NotesContext = createContext();
 
@@ -92,6 +93,7 @@ export function NotesProvider({ children }) {
               },
             }
           );
+          addNewToast();
           dispatch({
             type: "SET_NOTES_LIST",
             payload: response.data.notes,
@@ -113,6 +115,7 @@ export function NotesProvider({ children }) {
             authorization: token,
           },
         });
+        deletedToast();
         dispatch({
           type: "SET_NOTES_LIST",
           payload: response.data.notes,
@@ -121,6 +124,7 @@ export function NotesProvider({ children }) {
         console.error("ERROR", error);
       }
     })();
+    setEditNoteCard(false);
   }
 
   function editNote(currNote) {
@@ -142,6 +146,7 @@ export function NotesProvider({ children }) {
             },
           }
         );
+        editToast();
         dispatch({
           type: "GET_NOTES_LIST_VIA_REQ",
           payload: response.data.notes,
