@@ -1,4 +1,5 @@
 import hero from "./svg/hero-image.svg";
 import logo from "./logo/logo.png";
+import logout from "./svg/logout.svg";
 
-export { hero, logo };
+export { hero, logo, logout };

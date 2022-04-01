@@ -1,51 +1,46 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
-  BsFillArchiveFill,
-  BsFillBookmarksFill,
-  BsFillHouseFill,
-  BsFillTrashFill,
-  BsFillPersonFill,
-} from "react-icons/bs";
+  MdLabel,
+  MdArchive,
+  MdHome,
+  MdDelete,
+  MdAccountCircle,
+} from "react-icons/md";
+import { useNotes } from "../context";
 
 export function SideBar() {
+  const { isEditable, setIsEditable } = useNotes();
+
+  const navLinkStyle = ({ isActive }) => (isActive ? "active" : "aside-link");
+
   return (
     <>
       <aside className="aside-bar font-semibold text-lg">
-        <NavLink
-          to="/home"
-          className={({ isActive }) => (isActive ? "active" : "aside-link")}
-        >
-          <BsFillHouseFill /> <span> Home</span>
+        <NavLink to="/home" className={navLinkStyle}>
+          <MdHome size={25} /> <span> Home</span>
         </NavLink>
-        <NavLink
-          to="/labels"
-          className={({ isActive }) => (isActive ? "active" : "aside-link")}
-        >
-          <BsFillBookmarksFill /> <span> Labels</span>
+        <NavLink to="/labels" className={navLinkStyle}>
+          <MdLabel size={25} /> <span> Labels</span>
         </NavLink>
-        <NavLink
-          to="/archive"
-          className={({ isActive }) => (isActive ? "active" : "aside-link")}
-        >
-          <BsFillArchiveFill />
+        <NavLink to="/archive" className={navLinkStyle}>
+          <MdArchive size={25} />
           <span> Archive</span>
         </NavLink>
-        <NavLink
-          to="/trash"
-          className={({ isActive }) => (isActive ? "active" : "aside-link")}
-        >
-          <BsFillTrashFill />
+        <NavLink to="/trash" className={navLinkStyle}>
+          <MdDelete size={25} />
           <span> Trash</span>
         </NavLink>
-        <NavLink
-          to="/profile"
-          className={({ isActive }) => (isActive ? "active" : "aside-link")}
-        >
-          <BsFillPersonFill />
+        <NavLink to="/profile" className={navLinkStyle}>
+          <MdAccountCircle size={25} />
           <span> Profile</span>
         </NavLink>
-        <button className="btn btn-sm color-primary-outline">+ Add Note</button>
+        <button
+          className="btn color-primary-outline"
+          onClick={() => setIsEditable(!isEditable)}
+        >
+          + Add Note
+        </button>
       </aside>
     </>
   );

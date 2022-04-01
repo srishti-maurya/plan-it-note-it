@@ -27,10 +27,8 @@ export function AuthProvider({ children }) {
       localStorage.setItem("isLoggedIn", JSON.stringify(true));
       setToken(data.encodedToken);
       setIsLoggedIn(true);
-      //   setTimeout(() => {
       navigate("/home");
       setLoginInput({ email: "", password: "" });
-      //   }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -55,7 +53,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem("isLoggedIn", JSON.stringify(true));
       setToken(data.encodedToken);
       setIsLoggedIn(true);
-      //   setTimeout(() => {
       navigate("/");
       setSignupInput({
         fullname: "",
@@ -63,7 +60,6 @@ export function AuthProvider({ children }) {
         password: "",
         cnfpassword: "",
       });
-      //   }, 2000);
     } catch (error) {
       console.log(error);
     }
