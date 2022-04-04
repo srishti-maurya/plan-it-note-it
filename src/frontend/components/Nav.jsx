@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
 import React from "react";
+import { Link } from "react-router-dom";
+//assests
 import { logo } from "../assets";
+//context
 import { useAuth } from "../context"
 
 export function Nav() {

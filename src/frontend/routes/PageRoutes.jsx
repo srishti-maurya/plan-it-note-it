@@ -1,5 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+//routes
+import { PrivateRoute } from "./PrivateRoute";
+//pages
 import {
   LandingPage,
   Home,
@@ -11,7 +14,6 @@ import {
   Profile,
   Trash,
 } from "../pages";
-import { PrivateRoute } from "./PrivateRoute";
 
 export function PageRoutes() {
   return (

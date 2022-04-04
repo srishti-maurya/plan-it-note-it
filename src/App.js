@@ -1,7 +1,10 @@
-import { Nav } from "./frontend/components/Nav";
-import "../src/frontend/styles/styles.css";
-import { PageRoutes } from "./frontend/routes/PageRoutes";
 import { Toaster } from "react-hot-toast";
+//stylesheet
+import "../src/frontend/styles/styles.css";
+//components
+import { Nav } from "./frontend/components";
+//routes
+import { PageRoutes } from "./frontend/routes/PageRoutes";
 
 function App() {
   return (

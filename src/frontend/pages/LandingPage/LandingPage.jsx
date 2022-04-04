@@ -1,6 +1,7 @@
 import React from "react";
-import { hero } from "../../assets";
 import { Link, useNavigate } from "react-router-dom";
+//assests
+import { hero } from "../../assets";
 
 export function LandingPage() {
   const navigate = useNavigate();

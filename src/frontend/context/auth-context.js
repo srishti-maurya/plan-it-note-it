@@ -1,6 +1,8 @@
 import { createContext, useContext, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+//utils
+import { loginToast, logoutToast, signupToast } from "../utils/toasts";
 
 const AuthContext = createContext();
 
@@ -25,18 +27,20 @@ export function AuthProvider({ children }) {
       const { data } = await loginRequest(loginInput);
       localStorage.setItem("token", JSON.stringify(data.encodedToken));
       localStorage.setItem("isLoggedIn", JSON.stringify(true));
+      loginToast();
       setToken(data.encodedToken);
       setIsLoggedIn(true);
       navigate("/home");
       setLoginInput({ email: "", password: "" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const logoutHandler = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
+    logoutToast();
     setIsLoggedIn(false);
     navigate("/logout");
   };
@@ -51,6 +55,7 @@ export function AuthProvider({ children }) {
       const { data } = await signupRequest(signupInput);
       localStorage.setItem("token", JSON.stringify(data.encodedToken));
       localStorage.setItem("isLoggedIn", JSON.stringify(true));
+      signupToast();
       setToken(data.encodedToken);
       setIsLoggedIn(true);
       navigate("/");
@@ -61,7 +66,7 @@ export function AuthProvider({ children }) {
         cnfpassword: "",
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

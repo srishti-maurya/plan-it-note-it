@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+//icons
 import {
   MdLabel,
   MdArchive,
@@ -7,10 +8,11 @@ import {
   MdDelete,
   MdAccountCircle,
 } from "react-icons/md";
+//context
 import { useNotes } from "../context";
 
 export function SideBar() {
-  const { isEditable, setIsEditable } = useNotes();
+  const { setIsEditable, setUserInput, userInput } = useNotes();
 
   const navLinkStyle = ({ isActive }) => (isActive ? "active" : "aside-link");
 
@@ -37,7 +39,10 @@ export function SideBar() {
         </NavLink>
         <button
           className="btn color-primary-outline"
-          onClick={() => setIsEditable(!isEditable)}
+          onClick={() => {
+            setIsEditable(true);
+            setUserInput({ ...userInput, title: "", note: "" });
+          }}
         >
           + Add Note
         </button>

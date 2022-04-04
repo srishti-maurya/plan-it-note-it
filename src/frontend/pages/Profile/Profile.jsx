@@ -1,5 +1,6 @@
 import React from "react";
-import { SideBar } from "../../components/SideBar";
+//components
+import { SideBar } from "../../components";
 
 export function Profile() {
   return (

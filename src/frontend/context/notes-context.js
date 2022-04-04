@@ -6,7 +6,9 @@ import {
   useState,
 } from "react";
 import axios from "axios";
+//context
 import { useAuth } from "./auth-context";
+//utils
 import { addNewToast, editToast, deletedToast } from "../utils/toasts";
 
 const NotesContext = createContext();
@@ -14,36 +16,21 @@ const NotesContext = createContext();
 export const useNotes = () => useContext(NotesContext);
 
 export function NotesProvider({ children }) {
-  const [isEditable, setIsEditable] = useState(false);
-  const [editNoteCard, setEditNoteCard] = useState(false);
   const { token, isLoggedIn, navigate } = useAuth();
   const getTime = new Date(new Date().getTime()).toLocaleString();
 
+  const [isEditable, setIsEditable] = useState(false);
+  const [editNoteCard, setEditNoteCard] = useState(false);
+  const [currNoteId, setcurrNoteId] = useState(0);
+  const [userInput, setUserInput] = useState({
+    title: "",
+    note: "",
+    createdAt: "",
+  });
+
   function reducerFun(state, { type, payload }) {
     switch (type) {
-      case "ADD_NOTE":
-        return {
-          ...state,
-          title: payload.title,
-          note: payload.note,
-          createdTime: payload.createdTime,
-        };
-      case "EDIT_NOTE":
-        return {
-          ...state,
-          title: payload.title,
-          note: payload.note,
-          createdTime: payload.createdTime,
-          _id: payload._id,
-        };
-      case "SET_NOTES_LIST":
-        return {
-          title: "",
-          note: "",
-          notesList: payload,
-          createdTime: "",
-        };
-      case "GET_NOTES_LIST_VIA_REQ":
+      case "SET_LIST":
         return {
           ...state,
           notesList: payload,
@@ -54,9 +41,6 @@ export function NotesProvider({ children }) {
   }
 
   const [state, dispatch] = useReducer(reducerFun, {
-    title: "",
-    note: "",
-    createdTime: "",
     notesList: [],
   });
 
@@ -70,7 +54,7 @@ export function NotesProvider({ children }) {
             },
           });
           dispatch({
-            type: "GET_NOTES_LIST_VIA_REQ",
+            type: "SET_LIST",
             payload: response.data.notes,
           });
         } catch (error) {
@@ -81,6 +65,7 @@ export function NotesProvider({ children }) {
   }, [isLoggedIn, token]);
 
   function addNewNote(note) {
+    setUserInput({ ...userInput, title: "", note: "" });
     if (isLoggedIn) {
       (async function () {
         try {
@@ -95,7 +80,7 @@ export function NotesProvider({ children }) {
           );
           addNewToast();
           dispatch({
-            type: "SET_NOTES_LIST",
+            type: "SET_LIST",
             payload: response.data.notes,
           });
         } catch (error) {
@@ -117,18 +102,17 @@ export function NotesProvider({ children }) {
         });
         deletedToast();
         dispatch({
-          type: "SET_NOTES_LIST",
+          type: "SET_LIST",
           payload: response.data.notes,
         });
       } catch (error) {
         console.error("ERROR", error);
       }
     })();
-    setEditNoteCard(false);
   }
 
-  function editNote(currNote) {
-    const matchedNote = state.notesList.find((ele) => ele._id === currNote._id);
+  function editNote(currNote, itemId) {
+    const matchedNote = state.notesList.find((ele) => ele._id === itemId);
     (async function () {
       try {
         const response = await axios.post(
@@ -148,7 +132,7 @@ export function NotesProvider({ children }) {
         );
         editToast();
         dispatch({
-          type: "GET_NOTES_LIST_VIA_REQ",
+          type: "SET_LIST",
           payload: response.data.notes,
         });
       } catch (error) {
@@ -171,6 +155,10 @@ export function NotesProvider({ children }) {
         setIsEditable,
         editNoteCard,
         setEditNoteCard,
+        userInput,
+        setUserInput,
+        currNoteId,
+        setcurrNoteId,
       }}
     >
       {children}

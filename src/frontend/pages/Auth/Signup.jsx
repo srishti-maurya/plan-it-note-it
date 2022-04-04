@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+//context
 import { useAuth } from "../../context";
 
 export function Signup() {

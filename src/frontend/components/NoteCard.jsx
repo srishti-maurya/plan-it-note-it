@@ -1,5 +1,5 @@
 import React from "react";
-import { useNotes } from "../context";
+//icons
 import { BsFillPinFill } from "react-icons/bs";
 import {
   MdOutlineArchive,
@@ -7,16 +7,21 @@ import {
   MdDeleteOutline,
 } from "react-icons/md";
 import { IoColorPaletteOutline } from "react-icons/io5";
+//context
+import { useNotes } from "../context";
 
 export function NoteCard() {
   const {
     state,
     deleteNote,
     isEditable,
+    setcurrNoteId,
     setIsEditable,
-    dispatch,
     setEditNoteCard,
+    setUserInput,
+    userInput,
   } = useNotes();
+
   return (
     <>
       {state.notesList?.map((item) => (
@@ -24,9 +29,10 @@ export function NoteCard() {
           className="notes-card"
           key={item._id}
           onClick={() => {
-            setIsEditable(!isEditable);
+            setIsEditable(true);
             setEditNoteCard(true);
-            dispatch({ type: "EDIT_NOTE", payload: item });
+            setcurrNoteId(item._id);
+            setUserInput({ ...userInput, title: item.title, note: item.note });
           }}
         >
           <ul>
@@ -35,7 +41,7 @@ export function NoteCard() {
           </ul>
           <div>
             <p className="text-xs color-text-grey padding-sm">
-              {item.createdTime}
+              {item.createdAt}
             </p>
             <div className="notes-card-icons">
               <div>
@@ -50,7 +56,12 @@ export function NoteCard() {
               <div>
                 <MdOutlineArchive />
               </div>
-              <div onClick={() => deleteNote(item._id)}>
+              <div
+                onClick={(e) => {
+                  deleteNote(item._id);
+                  e.stopPropagation();
+                }}
+              >
                 <MdDeleteOutline />
               </div>
             </div>
