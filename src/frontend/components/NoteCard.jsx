@@ -14,7 +14,6 @@ export function NoteCard() {
   const {
     state,
     deleteNote,
-    isEditable,
     setcurrNoteId,
     setIsEditable,
     setEditNoteCard,
