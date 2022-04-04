@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/auth-context";
+//stylesheet
 import "./authStyles.css";
+//context
+import { useAuth } from "../../context";
 
 export function Login() {
   const { loginHandler, loginInput, setLoginInput } = useAuth();
@@ -52,12 +54,15 @@ export function Login() {
                 />
               </div>
               <button
-                className="btn color-primary-outline btn-full-width margin-sm"
+                className="btn color-primary-outline btn-full-width btn-sm margin-sm mt-05"
                 onClick={testCredentialsLogin}
               >
                 Login with test credentials
               </button>
-              <button className="btn btn-primary btn-full-width" type="submit">
+              <button
+                className="btn btn-primary btn-full-width btn-sm"
+                type="submit"
+              >
                 Login
               </button>
               <div className="text-center p-1 anchor-text">

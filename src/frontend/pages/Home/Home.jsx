@@ -1,12 +1,18 @@
 import React from "react";
-import { SideBar } from "../../components/SideBar";
+//components
+import { SideBar, NoteCard, NoteModal } from "../../components";
 
 export function Home() {
   return (
     <>
       <div className="page-container">
         <SideBar />
-        <main>Home Page</main>
+        <div className="notes-input-wrapper">
+          <div className="notes-card-wrapper">
+            <NoteModal />
+            <NoteCard />
+          </div>
+        </div>
       </div>
     </>
   );

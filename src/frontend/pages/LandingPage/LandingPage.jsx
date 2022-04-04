@@ -1,13 +1,14 @@
 import React from "react";
-import { hero } from "../../assets";
 import { Link, useNavigate } from "react-router-dom";
+//assests
+import { hero } from "../../assets";
 
 export function LandingPage() {
   const navigate = useNavigate();
   return (
     <>
       <section className="hero-section">
-        <div className="pt-1">
+        <div className="pt-1 hero-body">
           <p className="m-1 text-right text-4xl font-bold color-text-primary">
             Plan it, Note it
           </p>
@@ -32,8 +33,9 @@ export function LandingPage() {
             </Link>
           </div>
         </div>
-
-        <img src={hero} alt="hero" className="hero-img" />
+        <div className="img-container">
+          <img src={hero} alt="hero" className="hero-img img-responsive" />
+        </div>
       </section>
     </>
   );

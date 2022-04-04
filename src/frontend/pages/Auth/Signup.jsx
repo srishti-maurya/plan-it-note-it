@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/auth-context";
+//context
+import { useAuth } from "../../context";
 
 export function Signup() {
   const { signupInput, setSignupInput, signupHandler } = useAuth();

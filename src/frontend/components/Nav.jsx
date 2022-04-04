@@ -1,16 +1,23 @@
-import { Link } from "react-router-dom";
 import React from "react";
+import { Link } from "react-router-dom";
+//assests
 import { logo } from "../assets";
-import { useAuth } from "../context/auth-context";
+//context
+import { useAuth } from "../context"
 
 export function Nav() {
   const { isLoggedIn, logoutHandler, navigate } = useAuth();
   return (
     <>
       <div className="navigation-container">
-        <Link to="/">
-          <img src={logo} alt="logo" className="logo" />
-        </Link>
+        <div className="navigation-links">
+          <Link to="/">
+            <img src={logo} alt="logo" className="logo" />
+          </Link>
+          <Link to="/home" className="nav-links">
+            Home
+          </Link>
+        </div>
         <button className="navigation-sidebar-toggle">
           <i className="fas fa-bars fa-2x"></i>
         </button>
