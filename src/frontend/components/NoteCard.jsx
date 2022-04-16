@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 //icons
 import { BsFillPinFill } from "react-icons/bs";
 import {
@@ -19,6 +19,7 @@ export function NoteCard() {
     setEditNoteCard,
     setUserInput,
     userInput,
+    archiveNote,
   } = useNotes();
 
   return (
@@ -42,7 +43,10 @@ export function NoteCard() {
             <p className="text-xs color-text-grey padding-sm">
               {item.createdAt}
             </p>
-            <div className="notes-card-icons">
+            <div
+              className="notes-card-icons"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div>
                 <BsFillPinFill />
               </div>
@@ -52,13 +56,16 @@ export function NoteCard() {
               <div>
                 <IoColorPaletteOutline />
               </div>
-              <div>
+              <div
+                onClick={() => {
+                  archiveNote(item);
+                }}
+              >
                 <MdOutlineArchive />
               </div>
               <div
-                onClick={(e) => {
-                  deleteNote(item._id);
-                  e.stopPropagation();
+                onClick={() => {
+                  deleteNote(item);
                 }}
               >
                 <MdDeleteOutline />

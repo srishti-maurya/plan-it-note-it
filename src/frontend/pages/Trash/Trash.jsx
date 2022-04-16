@@ -1,13 +1,18 @@
 import React from "react";
 //components
-import { SideBar } from "../../components";
+import { SideBar, NoteModal, TrashCard } from "../../components";
 
 export function Trash() {
   return (
     <>
       <div className="page-container">
         <SideBar />
-        Trash
+        <div className="notes-input-wrapper">
+          <div className="notes-card-wrapper">
+            <NoteModal />
+            <TrashCard />
+          </div>
+        </div>
       </div>
     </>
   );

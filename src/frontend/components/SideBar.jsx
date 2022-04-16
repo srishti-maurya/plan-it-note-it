@@ -1,18 +1,13 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 //icons
-import {
-  MdLabel,
-  MdArchive,
-  MdHome,
-  MdDelete,
-  MdAccountCircle,
-} from "react-icons/md";
+import { MdLabel, MdArchive, MdHome, MdDelete } from "react-icons/md";
 //context
 import { useNotes } from "../context";
 
 export function SideBar() {
   const { setIsEditable, setUserInput, userInput } = useNotes();
+  const location = useLocation();
 
   const navLinkStyle = ({ isActive }) => (isActive ? "active" : "aside-link");
 
@@ -33,19 +28,18 @@ export function SideBar() {
           <MdDelete size={25} />
           <span> Trash</span>
         </NavLink>
-        <NavLink to="/profile" className={navLinkStyle}>
-          <MdAccountCircle size={25} />
-          <span> Profile</span>
-        </NavLink>
-        <button
-          className="btn color-primary-outline"
-          onClick={() => {
-            setIsEditable(true);
-            setUserInput({ ...userInput, title: "", note: "" });
-          }}
-        >
-          + Add Note
-        </button>
+
+        {location.pathname === "/home" ? (
+          <button
+            className="btn color-primary-outline"
+            onClick={() => {
+              setIsEditable(true);
+              setUserInput({ ...userInput, title: "", note: "" });
+            }}
+          >
+            + Add Note
+          </button>
+        ) : null}
       </aside>
     </>
   );

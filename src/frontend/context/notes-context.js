@@ -35,6 +35,17 @@ export function NotesProvider({ children }) {
           ...state,
           notesList: payload,
         };
+      case "SET_ARCHIVE_LIST":
+        return {
+          ...state,
+          archiveList: payload.archives,
+          notesList: payload.notes,
+        };
+      case "SET_TRASH_LIST":
+        return {
+          ...state,
+          trashList: [...state.trashList, payload],
+        };
       default:
         return state;
     }
@@ -42,6 +53,8 @@ export function NotesProvider({ children }) {
 
   const [state, dispatch] = useReducer(reducerFun, {
     notesList: [],
+    archiveList: [],
+    trashList: [],
   });
 
   useEffect(() => {
@@ -92,15 +105,19 @@ export function NotesProvider({ children }) {
     }
   }
 
-  function deleteNote(_id) {
+  function deleteNote(note) {
     (async function () {
       try {
-        const response = await axios.delete(`/api/notes/${_id}`, {
+        const response = await axios.delete(`/api/notes/${note._id}`, {
           headers: {
             authorization: token,
           },
         });
         deletedToast();
+        dispatch({
+          type: "SET_TRASH_LIST",
+          payload: note,
+        });
         dispatch({
           type: "SET_LIST",
           payload: response.data.notes,
@@ -142,6 +159,95 @@ export function NotesProvider({ children }) {
     setEditNoteCard(false);
   }
 
+  // Archive
+
+  function archiveNote(note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/notes/archives/${note._id}`,
+          { note },
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        dispatch({
+          type: "SET_ARCHIVE_LIST",
+          payload: response.data,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function restoreArchiveNote(note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/archives/restore/${note._id}`,
+          { note },
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        dispatch({
+          type: "SET_ARCHIVE_LIST",
+          payload: response.data,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function deleteArchiveNote(note) {
+    (async function () {
+      try {
+        const response = await axios.delete(
+          `/api/archives/delete/${note._id}`,
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        dispatch({
+          type: "SET_TRASH_LIST",
+          payload: note,
+        });
+        dispatch({
+          type: "SET_ARCHIVE_LIST",
+          payload: response.data,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function removeFromTrash(note) {
+    var removeByAttr = function (arr, attr, value) {
+      var i = arr.length;
+      while (i--) {
+        if (
+          arr[i] &&
+          arr[i].hasOwnProperty(attr) &&
+          arguments.length > 2 &&
+          arr[i][attr] === value
+        ) {
+          arr.splice(i, 1);
+        }
+      }
+      return arr;
+    };
+    removeByAttr(state.trashList, "_id", note._id);
+  }
+
   return (
     <NotesContext.Provider
       value={{
@@ -159,6 +265,10 @@ export function NotesProvider({ children }) {
         setUserInput,
         currNoteId,
         setcurrNoteId,
+        archiveNote,
+        restoreArchiveNote,
+        deleteArchiveNote,
+        removeFromTrash,
       }}
     >
       {children}
