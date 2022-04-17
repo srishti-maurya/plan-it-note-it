@@ -39,6 +39,7 @@ function SingleNoteCard({ item }) {
           note: item.note,
           bgColor: item.bgColor,
           tag: item.tag,
+          priority: item.priority,
         });
       }}
       style={{ backgroundColor: item.bgColor }}
@@ -49,12 +50,15 @@ function SingleNoteCard({ item }) {
       </ul>
       <div>
         {item.tag === "" ? null : <p className="tag-title">{item.tag}</p>}
+        {item.priority === "" ? null : (
+          <p className="priority-title">{item.priority}</p>
+        )}
         <p className="text-xs color-text-grey padding-sm">{item.createdAt}</p>
         <div className="notes-card-icons" onClick={(e) => e.stopPropagation()}>
           <div onClick={() => setIsPriorityOptions(!isPriorityOptions)}>
             {isPriorityOptions ? (
               <div className="tag-options-wrapper priority-option">
-                <PriorityList />
+                <PriorityList item={item} />
               </div>
             ) : null}
             <MdLowPriority />

@@ -37,6 +37,7 @@ export function NotesProvider({ children }) {
     createdAt: "",
     bgColor: "",
     tag: "",
+    priority: "",
   });
   function reducerFun(state, { type, payload }) {
     switch (type) {
@@ -88,7 +89,14 @@ export function NotesProvider({ children }) {
   }, [isLoggedIn, token]);
 
   function addNewNote(note) {
-    setUserInput({ ...userInput, title: "", note: "", bgColor: "" });
+    setUserInput({
+      ...userInput,
+      title: "",
+      note: "",
+      bgColor: "",
+      tag: "",
+      priority: "",
+    });
     if (isLoggedIn) {
       (async function () {
         try {
@@ -155,6 +163,7 @@ export function NotesProvider({ children }) {
               note: currNote.note,
               bgColor: currNote.bgColor,
               tag: currNote.tag,
+              priority: currNote.priority,
             },
           },
           {

@@ -48,6 +48,7 @@ export function SideBar() {
                 note: "",
                 bgColor: "",
                 tag: "",
+                priority: "",
               });
             }}
           >

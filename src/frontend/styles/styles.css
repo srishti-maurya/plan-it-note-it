@@ -225,13 +225,29 @@ html {
   border-radius: 5px;
   width: 60px;
   text-align: center;
+  border: 1px solid #A7BBC7
 }
 
 .tag-option{
   bottom: -210px;
   left: 35px;
 }
+
 .priority-option{
   bottom: -95px;
   left: -30px;
+}
+
+.priority-title{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background-color: #fff;
+  color: #FF6363;
+  font-size: 12px;
+  padding: 2px;
+  border-radius: 5px;
+  width: 58px;
+  text-align: center;
+  border: 1px solid #FF6363
 }
