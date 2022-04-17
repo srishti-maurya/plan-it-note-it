@@ -1,6 +1,6 @@
 import React from "react";
 //icons
-import { MdRestoreFromTrash } from "react-icons/md";
+import { MdRestoreFromTrash, MdDeleteForever } from "react-icons/md";
 //context
 import { useNotes } from "../context";
 
@@ -35,7 +35,7 @@ export function TrashCard() {
                   deleteNoteFromTrash(item);
                 }}
               >
-                <MdRestoreFromTrash />
+                <MdDeleteForever />
               </div>
             </div>
           </div>
