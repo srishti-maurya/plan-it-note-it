@@ -29,12 +29,14 @@ export function NotesProvider({ children }) {
 
   const [isEditable, setIsEditable] = useState(false);
   const [editNoteCard, setEditNoteCard] = useState(false);
+  const [usedTags, setUsedTags] = useState([]);
   const [currNoteId, setcurrNoteId] = useState(0);
   const [userInput, setUserInput] = useState({
     title: "",
     note: "",
     createdAt: "",
     bgColor: "",
+    tag: "",
   });
   function reducerFun(state, { type, payload }) {
     switch (type) {
@@ -152,6 +154,7 @@ export function NotesProvider({ children }) {
               title: currNote.title,
               note: currNote.note,
               bgColor: currNote.bgColor,
+              tag: currNote.tag,
             },
           },
           {
@@ -313,6 +316,8 @@ export function NotesProvider({ children }) {
         deleteArchiveNote,
         restoreFromTrash,
         deleteNoteFromTrash,
+        usedTags,
+        setUsedTags,
       }}
     >
       {children}

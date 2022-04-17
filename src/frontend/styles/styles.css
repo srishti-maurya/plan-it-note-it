@@ -167,6 +167,7 @@ html {
   flex-direction: column;
   justify-content: space-between;
   position: relative;
+  word-break: break-all;
 }
 
 .notes-card li {
@@ -194,4 +195,43 @@ html {
   bottom: -40px;
   background-color: var(--color-bg-card-overlay-text);
   display: flex;
+  border-radius: 5px;
+  z-index: 2;
+}
+
+.tag-options-wrapper{
+  position: absolute;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 2;
+  background-color: #fff;
+  padding: 5px;
+}
+
+.tag-btn{
+  background-color: var(--color-secondary-200);
+  color: var(--color-secondary-400);
+  font-size: 11px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.tag-title{
+  background-color: #fff;
+  font-size: 12px;
+  padding: 3px;
+  border-radius: 5px;
+  width: 60px;
+  text-align: center;
+}
+
+.tag-option{
+  bottom: -210px;
+  left: 35px;
+}
+.priority-option{
+  bottom: -95px;
+  left: -30px;
 }

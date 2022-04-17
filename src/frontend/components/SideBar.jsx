@@ -42,7 +42,13 @@ export function SideBar() {
             className="btn color-primary-outline"
             onClick={() => {
               setIsEditable(true);
-              setUserInput({ ...userInput, title: "", note: "", bgColor: "" });
+              setUserInput({
+                ...userInput,
+                title: "",
+                note: "",
+                bgColor: "",
+                tag: "",
+              });
             }}
           >
             + Add Note
