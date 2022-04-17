@@ -6,6 +6,7 @@ import { logo } from "../assets";
 import { useAuth } from "../context";
 // icons
 import { MdOutlineFilterAlt } from "react-icons/md";
+// components
 import { FilterList } from "./FilterList";
 
 export function Nav() {

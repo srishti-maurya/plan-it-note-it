@@ -6,3 +6,4 @@ export { Logout } from "./Auth/Logout.jsx";
 export { Labels } from "./Labels/Labels.jsx";
 export { LandingPage } from "./LandingPage/LandingPage.jsx";
 export { Trash } from "./Trash/Trash.jsx";
+export { NotFound } from "./NotFound/NotFound.jsx";

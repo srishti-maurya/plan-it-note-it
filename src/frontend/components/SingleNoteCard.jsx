@@ -26,7 +26,6 @@ function SingleNoteCard({ item }) {
   const [isColorPalette, setIsColorPalette] = useState(false);
   const [isTagOptions, setIsTagOptions] = useState(false);
   const [isPriorityOptions, setIsPriorityOptions] = useState(false);
-  console.log(item);
   return (
     <div
       className="notes-card"

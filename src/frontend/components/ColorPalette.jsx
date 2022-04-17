@@ -1,7 +1,7 @@
 import React from "react";
 import { useNotes } from "../context";
 
-function ColorPalette({ item }) {
+export function ColorPalette({ item }) {
   const { setUserInput, editNote, state } = useNotes();
   const colorPalette = [
     "#F7ECDE",
@@ -24,5 +24,3 @@ function ColorPalette({ item }) {
     ></button>
   ));
 }
-
-export { ColorPalette };

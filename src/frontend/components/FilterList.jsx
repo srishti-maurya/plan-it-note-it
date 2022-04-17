@@ -1,7 +1,6 @@
-import React from "react";
 import { useNotes } from "../context";
 
-function FilterList() {
+export function FilterList() {
   const { notesOrder, setNotesOrder } = useNotes();
   return (
     <div className="filter-list">
@@ -125,5 +124,3 @@ function FilterList() {
     </div>
   );
 }
-
-export { FilterList };

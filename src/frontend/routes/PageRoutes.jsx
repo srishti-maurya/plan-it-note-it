@@ -12,6 +12,7 @@ import {
   Signup,
   Labels,
   Trash,
+  NotFound,
 } from "../pages";
 
 export function PageRoutes() {
@@ -22,6 +23,7 @@ export function PageRoutes() {
         <Route path="login" element={<Login />} />
         <Route path="logout" element={<Logout />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="/*" element={<NotFound />} />
         <Route element={<PrivateRoute />}>
           <Route path="labels" element={<Labels />} />
           <Route path="trash" element={<Trash />} />
