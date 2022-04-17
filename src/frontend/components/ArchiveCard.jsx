@@ -8,7 +8,7 @@ export function ArchiveCard() {
   const { state, restoreArchiveNote, deleteArchiveNote } = useNotes();
   return (
     <>
-      {state.notesList.length < 1 ? (
+      {state.archiveList.length < 1 ? (
         <h2>No Archived Notes found</h2>
       ) : (
         state.archiveList?.map((item) => (

@@ -9,7 +9,15 @@ import axios from "axios";
 //context
 import { useAuth } from "./auth-context";
 //utils
-import { addNewToast, editToast, deletedToast } from "../utils/toasts";
+import {
+  addNewToast,
+  editToast,
+  deletedToast,
+  archiveToast,
+  unarchiveToast,
+  restoreToast,
+  trashedToast,
+} from "../utils/toasts";
 
 const NotesContext = createContext();
 
@@ -117,7 +125,7 @@ export function NotesProvider({ children }) {
             },
           }
         );
-        deletedToast();
+        trashedToast();
         dispatch({
           type: "SET_LIST",
           payload: response.data.notes,
@@ -178,6 +186,7 @@ export function NotesProvider({ children }) {
             },
           }
         );
+        archiveToast();
         dispatch({
           type: "SET_ARCHIVE_LIST",
           payload: response.data,
@@ -200,6 +209,7 @@ export function NotesProvider({ children }) {
             },
           }
         );
+        unarchiveToast();
         dispatch({
           type: "SET_ARCHIVE_LIST",
           payload: response.data,
@@ -222,7 +232,7 @@ export function NotesProvider({ children }) {
             },
           }
         );
-        console.log(response);
+        trashedToast();
         dispatch({
           type: "SET_TRASH_LIST",
           payload: response.data.trash,
@@ -249,6 +259,7 @@ export function NotesProvider({ children }) {
           },
           { headers: { authorization: token } }
         );
+        restoreToast();
         dispatch({
           type: "SET_TRASH_LIST",
           payload: response.data.trash,
@@ -269,6 +280,7 @@ export function NotesProvider({ children }) {
         const response = await axios.delete(`/api/trash/delete/${note._id}`, {
           headers: { authorization: token },
         });
+        deletedToast();
         dispatch({
           type: "SET_TRASH_LIST",
           payload: response.data.trash,
