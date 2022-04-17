@@ -22,6 +22,7 @@ export function ArchiveCard() {
               <li>{item.note}</li>
             </ul>
             <div>
+              {item.tag === "" ? null : <p className="tag-title">{item.tag}</p>}
               <div className="notes-card-icons">
                 <p className="text-xs color-text-grey padding-sm">
                   {item.createdAt}

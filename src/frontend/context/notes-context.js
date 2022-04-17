@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import axios from "axios";
+import dayjs from "dayjs";
 //context
 import { useAuth } from "./auth-context";
 //utils
@@ -25,16 +26,20 @@ export const useNotes = () => useContext(NotesContext);
 
 export function NotesProvider({ children }) {
   const { token, isLoggedIn, navigate } = useAuth();
-  const getTime = new Date(new Date().getTime()).toLocaleString();
+  const getTime = () => dayjs().format("YYYY-MM-DD HH:mm:ss");
 
   const [isEditable, setIsEditable] = useState(false);
   const [editNoteCard, setEditNoteCard] = useState(false);
+  const [usedTags, setUsedTags] = useState([]);
   const [currNoteId, setcurrNoteId] = useState(0);
+  const [notesOrder, setNotesOrder] = useState({ sort: "", filter: "" });
   const [userInput, setUserInput] = useState({
     title: "",
     note: "",
     createdAt: "",
     bgColor: "",
+    tag: "",
+    priority: { low: "1" },
   });
   function reducerFun(state, { type, payload }) {
     switch (type) {
@@ -86,7 +91,14 @@ export function NotesProvider({ children }) {
   }, [isLoggedIn, token]);
 
   function addNewNote(note) {
-    setUserInput({ ...userInput, title: "", note: "", bgColor: "" });
+    setUserInput({
+      ...userInput,
+      title: "",
+      note: "",
+      bgColor: "",
+      tag: "",
+      priority: { low: "1" },
+    });
     if (isLoggedIn) {
       (async function () {
         try {
@@ -152,6 +164,8 @@ export function NotesProvider({ children }) {
               title: currNote.title,
               note: currNote.note,
               bgColor: currNote.bgColor,
+              tag: currNote.tag,
+              priority: currNote.priority,
             },
           },
           {
@@ -313,6 +327,10 @@ export function NotesProvider({ children }) {
         deleteArchiveNote,
         restoreFromTrash,
         deleteNoteFromTrash,
+        usedTags,
+        setUsedTags,
+        notesOrder,
+        setNotesOrder,
       }}
     >
       {children}

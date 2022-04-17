@@ -73,6 +73,7 @@ html {
   width: inherit;
   box-shadow: var(--nav-shadow);
   background-color: var(--color-background-400);
+  position: relative;
 }
 
 .logo {
@@ -167,6 +168,7 @@ html {
   flex-direction: column;
   justify-content: space-between;
   position: relative;
+  word-break: break-all;
 }
 
 .notes-card li {
@@ -194,4 +196,78 @@ html {
   bottom: -40px;
   background-color: var(--color-bg-card-overlay-text);
   display: flex;
+  border-radius: 5px;
+  z-index: 2;
+}
+
+.tag-options-wrapper{
+  position: absolute;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 2;
+  background-color: #fff;
+  padding: 5px;
+}
+
+.tag-btn{
+  background-color: var(--color-secondary-200);
+  color: var(--color-secondary-400);
+  font-size: 11px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.tag-title{
+  background-color: #fff;
+  font-size: 12px;
+  padding: 3px;
+  border-radius: 5px;
+  width: 60px;
+  text-align: center;
+  border: 1px solid #A7BBC7
+}
+
+.tag-option{
+  bottom: -210px;
+  left: 35px;
+}
+
+.priority-option{
+  bottom: -95px;
+  left: -30px;
+}
+
+.priority-title{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background-color: #fff;
+  color: #FF6363;
+  font-size: 12px;
+  padding: 2px;
+  border-radius: 5px;
+  width: 58px;
+  text-align: center;
+  border: 1px solid #FF6363
+}
+
+.filter-list{
+  position: absolute;
+  top: 70px;
+  width: fit-content;
+  right: 10px;
+  background-color: #fff;
+  padding: 10px;
+  z-index: 4;
+  box-shadow: var(--nav-shadow);
+}
+
+.border-bottom{
+  border-bottom: 1px solid var(--color-primary-400);
+}
+
+.margin-right-sm{
+  margin-right: 5px;
 }
