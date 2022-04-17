@@ -73,6 +73,7 @@ html {
   width: inherit;
   box-shadow: var(--nav-shadow);
   background-color: var(--color-background-400);
+  position: relative;
 }
 
 .logo {
@@ -250,4 +251,23 @@ html {
   width: 58px;
   text-align: center;
   border: 1px solid #FF6363
+}
+
+.filter-list{
+  position: absolute;
+  top: 70px;
+  width: fit-content;
+  right: 10px;
+  background-color: #fff;
+  padding: 10px;
+  z-index: 4;
+  box-shadow: var(--nav-shadow);
+}
+
+.border-bottom{
+  border-bottom: 1px solid var(--color-primary-400);
+}
+
+.margin-right-sm{
+  margin-right: 5px;
 }

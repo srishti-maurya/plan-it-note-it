@@ -39,7 +39,7 @@ export function NoteModal() {
                 setUserInput({
                   ...userInput,
                   note: e.target.value,
-                  createdAt: getTime,
+                  createdAt: getTime(),
                 });
               }}
             />

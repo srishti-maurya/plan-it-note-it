@@ -39,7 +39,7 @@ export function SideBar() {
 
         {location.pathname === "/home" ? (
           <button
-            className="btn color-primary-outline"
+            className="btn btn-sm color-primary-outline"
             onClick={() => {
               setIsEditable(true);
               setUserInput({
@@ -48,7 +48,7 @@ export function SideBar() {
                 note: "",
                 bgColor: "",
                 tag: "",
-                priority: "",
+                priority: { low: "1" },
               });
             }}
           >
