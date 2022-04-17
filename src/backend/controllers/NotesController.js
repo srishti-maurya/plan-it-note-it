@@ -177,7 +177,6 @@ export const archiveNoteHandler = function (schema, request) {
 
 export const moveNoteToTrashHandler = function (schema, request) {
   const user = requiresAuth.call(this, request);
-  console.log();
   try {
     if (!user) {
       return new Response(
