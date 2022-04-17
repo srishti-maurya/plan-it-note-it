@@ -61,6 +61,12 @@ html {
   margin: 1rem 0;
 }
 
+.flex-center{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* nav */
 
 .navigation-container {

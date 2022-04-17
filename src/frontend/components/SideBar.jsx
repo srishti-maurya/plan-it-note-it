@@ -15,18 +15,26 @@ export function SideBar() {
     <>
       <aside className="aside-bar font-semibold text-lg">
         <NavLink to="/home" className={navLinkStyle}>
-          <MdHome size={25} /> <span> Home</span>
+          <span className="flex-center">
+            <MdHome size={25} /> <span> Home</span>
+          </span>
         </NavLink>
         <NavLink to="/labels" className={navLinkStyle}>
-          <MdLabel size={25} /> <span> Labels</span>
+          <span className="flex-center">
+            <MdLabel size={25} /> <span> Labels</span>
+          </span>
         </NavLink>
         <NavLink to="/archive" className={navLinkStyle}>
-          <MdArchive size={25} />
-          <span> Archive</span>
+          <span className="flex-center">
+            <MdArchive size={25} />
+            <span> Archive</span>
+          </span>
         </NavLink>
         <NavLink to="/trash" className={navLinkStyle}>
-          <MdDelete size={25} />
-          <span> Trash</span>
+          <span className="flex-center">
+            <MdDelete size={25} />
+            <span> Trash</span>
+          </span>
         </NavLink>
 
         {location.pathname === "/home" ? (
