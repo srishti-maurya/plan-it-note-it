@@ -70,3 +70,43 @@ export const restoreFromArchivesHandler = function (schema, request) {
   this.db.users.update({ _id: user._id }, user);
   return new Response(200, {}, { archives: user.archives, notes: user.notes });
 };
+
+/**
+ * This handler handles trashing a note
+ * send POST Request at /api/notes/trash/:noteId
+ * body contains {note}
+ * */
+
+export const moveArchiveToTrashHandler = function (schema, request) {
+  const user = requiresAuth.call(this, request);
+  console.log();
+  try {
+    if (!user) {
+      return new Response(
+        404,
+        {},
+        {
+          errors: ["The email you entered is not Registered. Not Found error"],
+        }
+      );
+    }
+    const { noteId } = request.params;
+    const trashedNote = user.archives.filter((note) => note._id === noteId)[0];
+    user.archives = user.archives.filter((note) => note._id !== noteId);
+    user.trash.push({ ...trashedNote });
+    this.db.users.update({ _id: user._id }, user);
+    return new Response(
+      201,
+      {},
+      { trash: user.trash, archives: user.archives }
+    );
+  } catch (error) {
+    return new Response(
+      500,
+      {},
+      {
+        error,
+      }
+    );
+  }
+};

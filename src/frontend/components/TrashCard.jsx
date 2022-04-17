@@ -5,7 +5,7 @@ import { MdRestoreFromTrash } from "react-icons/md";
 import { useNotes } from "../context";
 
 export function TrashCard() {
-  const { state, addNewNote, removeFromTrash } = useNotes();
+  const { state, restoreFromTrash, deleteNoteFromTrash } = useNotes();
   return (
     <>
       {state.trashList?.map((item) => (
@@ -25,8 +25,14 @@ export function TrashCard() {
               </p>
               <div
                 onClick={() => {
-                  addNewNote(item);
-                  removeFromTrash(item);
+                  restoreFromTrash(item);
+                }}
+              >
+                <MdRestoreFromTrash />
+              </div>
+              <div
+                onClick={() => {
+                  deleteNoteFromTrash(item);
                 }}
               >
                 <MdRestoreFromTrash />

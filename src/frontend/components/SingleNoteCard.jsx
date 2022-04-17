@@ -13,7 +13,7 @@ import { ColorPalette } from "./ColorPalette";
 
 function SingleNoteCard({ item }) {
   const {
-    deleteNote,
+    moveToTrash,
     setcurrNoteId,
     setIsEditable,
     setEditNoteCard,
@@ -68,7 +68,7 @@ function SingleNoteCard({ item }) {
           </div>
           <div
             onClick={() => {
-              deleteNote(item);
+              moveToTrash(item);
             }}
           >
             <MdDeleteOutline />
