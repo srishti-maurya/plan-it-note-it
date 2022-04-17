@@ -4,3 +4,4 @@ export { NoteModal } from "./NoteModal.jsx";
 export { SideBar } from "./SideBar.jsx";
 export { ArchiveCard } from "./ArchiveCard.jsx";
 export { TrashCard } from "./TrashCard.jsx";
+export { ColorPalette } from "./ColorPalette.jsx";

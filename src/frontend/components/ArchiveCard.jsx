@@ -9,7 +9,11 @@ export function ArchiveCard() {
   return (
     <>
       {state.archiveList?.map((item) => (
-        <div className="notes-card" key={item._id}>
+        <div
+          className="notes-card"
+          key={item._id}
+          style={{ backgroundColor: item.bgColor }}
+        >
           <ul>
             <li>{item.title} </li>
             <li>{item.note}</li>

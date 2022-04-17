@@ -1,15 +1,19 @@
 import React from "react";
 //icons
-import { MdOutlineDeleteForever, MdRestoreFromTrash } from "react-icons/md";
+import { MdRestoreFromTrash } from "react-icons/md";
 //context
 import { useNotes } from "../context";
 
 export function TrashCard() {
-  const { state, addNewNote, deleteArchiveNote, removeFromTrash } = useNotes();
+  const { state, addNewNote, removeFromTrash } = useNotes();
   return (
     <>
       {state.trashList?.map((item) => (
-        <div className="notes-card" key={item._id}>
+        <div
+          className="notes-card"
+          key={item._id}
+          style={{ backgroundColor: item.bgColor }}
+        >
           <ul>
             <li>{item.title} </li>
             <li>{item.note}</li>
@@ -26,13 +30,6 @@ export function TrashCard() {
                 }}
               >
                 <MdRestoreFromTrash />
-              </div>
-              <div
-                onClick={() => {
-                  deleteArchiveNote(item);
-                }}
-              >
-                <MdOutlineDeleteForever />
               </div>
             </div>
           </div>

@@ -26,8 +26,8 @@ export function NotesProvider({ children }) {
     title: "",
     note: "",
     createdAt: "",
+    bgColor: "",
   });
-
   function reducerFun(state, { type, payload }) {
     switch (type) {
       case "SET_LIST":
@@ -78,7 +78,7 @@ export function NotesProvider({ children }) {
   }, [isLoggedIn, token]);
 
   function addNewNote(note) {
-    setUserInput({ ...userInput, title: "", note: "" });
+    setUserInput({ ...userInput, title: "", note: "", bgColor: "" });
     if (isLoggedIn) {
       (async function () {
         try {
@@ -139,6 +139,7 @@ export function NotesProvider({ children }) {
               ...matchedNote,
               title: currNote.title,
               note: currNote.note,
+              bgColor: currNote.bgColor,
             },
           },
           {

@@ -160,6 +160,7 @@ html {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
 .notes-card li {
@@ -180,4 +181,11 @@ html {
 
 .notes-card-icons div {
   cursor: pointer;
+}
+
+.color-palette-wrapper{
+  position: absolute;
+  bottom: -40px;
+  background-color: var(--color-bg-card-overlay-text);
+  display: flex;
 }
