@@ -9,7 +9,15 @@ import axios from "axios";
 //context
 import { useAuth } from "./auth-context";
 //utils
-import { addNewToast, editToast, deletedToast } from "../utils/toasts";
+import {
+  addNewToast,
+  editToast,
+  deletedToast,
+  archiveToast,
+  unarchiveToast,
+  restoreToast,
+  trashedToast,
+} from "../utils/toasts";
 
 const NotesContext = createContext();
 
@@ -26,14 +34,25 @@ export function NotesProvider({ children }) {
     title: "",
     note: "",
     createdAt: "",
+    bgColor: "",
   });
-
   function reducerFun(state, { type, payload }) {
     switch (type) {
       case "SET_LIST":
         return {
           ...state,
           notesList: payload,
+        };
+      case "SET_ARCHIVE_LIST":
+        return {
+          ...state,
+          archiveList: payload.archives,
+          notesList: payload.notes,
+        };
+      case "SET_TRASH_LIST":
+        return {
+          ...state,
+          trashList: payload,
         };
       default:
         return state;
@@ -42,6 +61,8 @@ export function NotesProvider({ children }) {
 
   const [state, dispatch] = useReducer(reducerFun, {
     notesList: [],
+    archiveList: [],
+    trashList: [],
   });
 
   useEffect(() => {
@@ -65,7 +86,7 @@ export function NotesProvider({ children }) {
   }, [isLoggedIn, token]);
 
   function addNewNote(note) {
-    setUserInput({ ...userInput, title: "", note: "" });
+    setUserInput({ ...userInput, title: "", note: "", bgColor: "" });
     if (isLoggedIn) {
       (async function () {
         try {
@@ -92,18 +113,26 @@ export function NotesProvider({ children }) {
     }
   }
 
-  function deleteNote(_id) {
+  function moveToTrash(note) {
     (async function () {
       try {
-        const response = await axios.delete(`/api/notes/${_id}`, {
-          headers: {
-            authorization: token,
-          },
-        });
-        deletedToast();
+        const response = await axios.post(
+          `/api/notes/trash/${note._id}`,
+          { note },
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        trashedToast();
         dispatch({
           type: "SET_LIST",
           payload: response.data.notes,
+        });
+        dispatch({
+          type: "SET_TRASH_LIST",
+          payload: response.data.trash,
         });
       } catch (error) {
         console.error("ERROR", error);
@@ -122,6 +151,7 @@ export function NotesProvider({ children }) {
               ...matchedNote,
               title: currNote.title,
               note: currNote.note,
+              bgColor: currNote.bgColor,
             },
           },
           {
@@ -142,11 +172,130 @@ export function NotesProvider({ children }) {
     setEditNoteCard(false);
   }
 
+  // Archive
+
+  function archiveNote(note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/notes/archives/${note._id}`,
+          { note },
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        archiveToast();
+        dispatch({
+          type: "SET_ARCHIVE_LIST",
+          payload: response.data,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function restoreArchiveNote(note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/archives/restore/${note._id}`,
+          { note },
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        unarchiveToast();
+        dispatch({
+          type: "SET_ARCHIVE_LIST",
+          payload: response.data,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function deleteArchiveNote(note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/archives/trash/${note._id}`,
+          { note },
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+        trashedToast();
+        dispatch({
+          type: "SET_TRASH_LIST",
+          payload: response.data.trash,
+        });
+        dispatch({
+          type: "SET_ARCHIVE_LIST",
+          payload: response.data,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  // trash
+
+  function restoreFromTrash(note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/trash/restore/${note._id}`,
+          {
+            note,
+          },
+          { headers: { authorization: token } }
+        );
+        restoreToast();
+        dispatch({
+          type: "SET_TRASH_LIST",
+          payload: response.data.trash,
+        });
+        dispatch({
+          type: "SET_LIST",
+          payload: response.data.notes,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function deleteNoteFromTrash(note) {
+    (async function () {
+      try {
+        const response = await axios.delete(`/api/trash/delete/${note._id}`, {
+          headers: { authorization: token },
+        });
+        deletedToast();
+        dispatch({
+          type: "SET_TRASH_LIST",
+          payload: response.data.trash,
+        });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
   return (
     <NotesContext.Provider
       value={{
         addNewNote,
-        deleteNote,
+        moveToTrash,
         state,
         dispatch,
         editNote,
@@ -159,6 +308,11 @@ export function NotesProvider({ children }) {
         setUserInput,
         currNoteId,
         setcurrNoteId,
+        archiveNote,
+        restoreArchiveNote,
+        deleteArchiveNote,
+        restoreFromTrash,
+        deleteNoteFromTrash,
       }}
     >
       {children}

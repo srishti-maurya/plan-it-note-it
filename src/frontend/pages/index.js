@@ -5,5 +5,4 @@ export { Signup } from "./Auth/Signup.jsx";
 export { Logout } from "./Auth/Logout.jsx";
 export { Labels } from "./Labels/Labels.jsx";
 export { LandingPage } from "./LandingPage/LandingPage.jsx";
-export { Profile } from "./Profile/Profile.jsx";
 export { Trash } from "./Trash/Trash.jsx";

@@ -1,18 +1,13 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 //icons
-import {
-  MdLabel,
-  MdArchive,
-  MdHome,
-  MdDelete,
-  MdAccountCircle,
-} from "react-icons/md";
+import { MdLabel, MdArchive, MdHome, MdDelete } from "react-icons/md";
 //context
 import { useNotes } from "../context";
 
 export function SideBar() {
   const { setIsEditable, setUserInput, userInput } = useNotes();
+  const location = useLocation();
 
   const navLinkStyle = ({ isActive }) => (isActive ? "active" : "aside-link");
 
@@ -20,32 +15,39 @@ export function SideBar() {
     <>
       <aside className="aside-bar font-semibold text-lg">
         <NavLink to="/home" className={navLinkStyle}>
-          <MdHome size={25} /> <span> Home</span>
+          <span className="flex-center">
+            <MdHome size={25} /> <span> Home</span>
+          </span>
         </NavLink>
         <NavLink to="/labels" className={navLinkStyle}>
-          <MdLabel size={25} /> <span> Labels</span>
+          <span className="flex-center">
+            <MdLabel size={25} /> <span> Labels</span>
+          </span>
         </NavLink>
         <NavLink to="/archive" className={navLinkStyle}>
-          <MdArchive size={25} />
-          <span> Archive</span>
+          <span className="flex-center">
+            <MdArchive size={25} />
+            <span> Archive</span>
+          </span>
         </NavLink>
         <NavLink to="/trash" className={navLinkStyle}>
-          <MdDelete size={25} />
-          <span> Trash</span>
+          <span className="flex-center">
+            <MdDelete size={25} />
+            <span> Trash</span>
+          </span>
         </NavLink>
-        <NavLink to="/profile" className={navLinkStyle}>
-          <MdAccountCircle size={25} />
-          <span> Profile</span>
-        </NavLink>
-        <button
-          className="btn color-primary-outline"
-          onClick={() => {
-            setIsEditable(true);
-            setUserInput({ ...userInput, title: "", note: "" });
-          }}
-        >
-          + Add Note
-        </button>
+
+        {location.pathname === "/home" ? (
+          <button
+            className="btn color-primary-outline"
+            onClick={() => {
+              setIsEditable(true);
+              setUserInput({ ...userInput, title: "", note: "", bgColor: "" });
+            }}
+          >
+            + Add Note
+          </button>
+        ) : null}
       </aside>
     </>
   );

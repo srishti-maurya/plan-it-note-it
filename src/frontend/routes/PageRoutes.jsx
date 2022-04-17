@@ -11,7 +11,6 @@ import {
   Logout,
   Signup,
   Labels,
-  Profile,
   Trash,
 } from "../pages";
 
@@ -25,7 +24,6 @@ export function PageRoutes() {
         <Route path="signup" element={<Signup />} />
         <Route element={<PrivateRoute />}>
           <Route path="labels" element={<Labels />} />
-          <Route path="profile" element={<Profile />} />
           <Route path="trash" element={<Trash />} />
           <Route path="home" element={<Home />} />
           <Route path="archive" element={<Archive />} />
