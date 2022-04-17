@@ -47,7 +47,8 @@ Are you planning to read a book? We've got your back! The top book collections h
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Preview 
-
+![landingpage](https://user-images.githubusercontent.com/39724354/163732023-326e7c66-6c9c-4d1d-80ea-0749d9df49c9.png)
+![home](https://user-images.githubusercontent.com/39724354/163732062-af971f45-372d-4c87-af0d-15be64b63fe2.png)
 
 
 ## E-Commerce Backend
