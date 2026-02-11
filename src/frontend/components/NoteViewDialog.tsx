@@ -78,9 +78,10 @@ export function NoteViewDialog({
         <Separator />
 
         <div className="flex-1 overflow-auto py-2">
-          <p className="text-sm leading-relaxed whitespace-pre-wrap">
-            {note.note}
-          </p>
+          <div
+            className="tiptap prose-view text-sm leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: note.note }}
+          />
         </div>
 
         <DialogFooter>

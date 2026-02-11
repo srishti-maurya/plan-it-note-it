@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -76,17 +76,12 @@ export function NoteModal() {
               setUserInput({ ...userInput, title: e.target.value })
             }
           />
-          <Textarea
+          <RichTextEditor
+            content={userInput.note}
+            onChange={(html) =>
+              setUserInput({ ...userInput, note: html, createdAt: getTime() })
+            }
             placeholder="Take a note..."
-            name="note"
-            value={userInput.note}
-            onChange={(e) => {
-              setUserInput({
-                ...userInput,
-                note: e.target.value,
-                createdAt: getTime(),
-              });
-            }}
           />
 
           {/* Color picker */}

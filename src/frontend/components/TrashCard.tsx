@@ -8,6 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { stripHtml } from "@/lib/strip-html";
 
 export function TrashCard() {
   const { state, restoreFromTrash, deleteNoteFromTrash } = useNotes();
@@ -35,7 +36,7 @@ export function TrashCard() {
           </CardHeader>
           <CardContent className="pb-2">
             <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
-              {item.note}
+              {stripHtml(item.note)}
             </p>
           </CardContent>
           <CardFooter className="flex items-center justify-between pt-2 pb-3">

@@ -36,6 +36,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { stripHtml } from "@/lib/strip-html";
 
 const colorPalette = [
   { label: "Lavender", value: "#E8E0F0" },
@@ -240,7 +241,7 @@ export function SingleNoteCard({ item }: Props) {
 
         <CardContent className="pb-2">
           <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
-            {item.note}
+            {stripHtml(item.note)}
           </p>
         </CardContent>
 
