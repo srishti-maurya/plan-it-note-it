@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   MoreHorizontal,
   Pencil,
@@ -8,11 +8,14 @@ import {
   Palette,
   Tag,
   ArrowUpDown,
+  Star,
+  FolderIcon,
 } from "lucide-react";
 import { useNotes } from "../context";
 import { tagsList } from "./Tags";
 import { priorityList } from "./PriorityList";
 import { NoteViewDialog } from "./NoteViewDialog";
+import { getEffectiveTags } from "../utils/getEffectiveTags";
 import type { Note } from "../../types";
 import {
   Card,
@@ -30,6 +33,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuCheckboxItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -53,6 +57,8 @@ interface Props {
 
 export function SingleNoteCard({ item }: Props) {
   const [viewOpen, setViewOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuClosedAt = useRef(0);
 
   const {
     moveToTrash,
@@ -64,12 +70,16 @@ export function SingleNoteCard({ item }: Props) {
     archiveNote,
     editNote,
     state,
-    usedTags,
-    setUsedTags,
+    toggleFavorite,
+    moveNoteToFolder,
+    folders,
+    customTags,
   } = useNotes();
 
   const matchedNote = state.notesList.find((ele) => ele._id === item._id);
   const priorityKey = item.priority ? Object.keys(item.priority)[0] : "";
+  const effectiveTags = getEffectiveTags(item);
+  const allTagOptions = [...tagsList, ...customTags.filter((t) => !tagsList.includes(t))];
 
   const handleEdit = () => {
     setIsEditable(true);
@@ -82,6 +92,9 @@ export function SingleNoteCard({ item }: Props) {
       bgColor: item.bgColor,
       tag: item.tag,
       priority: item.priority,
+      tags: item.tags || [],
+      folderId: item.folderId,
+      favorite: item.favorite,
     });
   };
 
@@ -95,12 +108,15 @@ export function SingleNoteCard({ item }: Props) {
     }
   };
 
-  const handleTagChange = (value: string) => {
-    if (matchedNote) {
-      setUserInput({ ...matchedNote, tag: value });
-      editNote({ ...matchedNote, tag: value }, item._id);
-      setUsedTags([...usedTags, value]);
-    }
+  const handleTagToggle = (tag: string, checked: boolean) => {
+    if (!matchedNote) return;
+    const currentTags = getEffectiveTags(matchedNote);
+    const newTags = checked
+      ? [...currentTags, tag]
+      : currentTags.filter((t) => t !== tag);
+    const updated = { ...matchedNote, tags: newTags, tag: newTags[0] || "" };
+    setUserInput(updated);
+    editNote(updated, item._id);
   };
 
   const handleColorChange = (color: string) => {
@@ -115,127 +131,186 @@ export function SingleNoteCard({ item }: Props) {
       <Card
         className="flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md break-words cursor-pointer"
         style={{ backgroundColor: item.bgColor || undefined }}
-        onClick={() => setViewOpen(true)}
+        onClick={() => {
+          // Don't open view if dropdown just closed (prevents ghost click)
+          if (Date.now() - menuClosedAt.current < 300) return;
+          setViewOpen(true);
+        }}
       >
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
             <h3 className="flex-1 font-semibold text-sm leading-tight">
               {item.title}
             </h3>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 shrink-0 text-muted-foreground"
+            <div className="flex items-center gap-0.5 shrink-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-muted-foreground"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(item);
+                }}
+              >
+                <Star
+                  className={cn(
+                    "h-4 w-4",
+                    item.favorite && "fill-yellow-400 text-yellow-400"
+                  )}
+                />
+              </Button>
+              <DropdownMenu
+                open={menuOpen}
+                onOpenChange={(open) => {
+                  setMenuOpen(open);
+                  if (!open) menuClosedAt.current = Date.now();
+                }}
+              >
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-muted-foreground"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-48"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => setViewOpen(true)}>
-                  <Eye className="h-4 w-4" />
-                  View
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleEdit}>
-                  <Pencil className="h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setViewOpen(true)}>
+                    <Eye className="h-4 w-4" />
+                    View
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleEdit}>
+                    <Pencil className="h-4 w-4" />
+                    Edit
+                  </DropdownMenuItem>
 
-                <DropdownMenuSeparator />
+                  <DropdownMenuSeparator />
 
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <ArrowUpDown className="h-4 w-4" />
-                    Set Priority
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup
-                      value={priorityKey}
-                      onValueChange={handlePriorityChange}
-                    >
-                      {priorityList.map((p) => {
-                        const key = Object.keys(p)[0];
-                        return (
-                          <DropdownMenuRadioItem key={key} value={key}>
-                            <span
-                              className={cn(
-                                "mr-2 h-2 w-2 rounded-full",
-                                key === "low" && "bg-green-500",
-                                key === "medium" && "bg-yellow-500",
-                                key === "high" && "bg-red-500"
-                              )}
-                            />
-                            <span className="capitalize">{key}</span>
-                          </DropdownMenuRadioItem>
-                        );
-                      })}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <ArrowUpDown className="h-4 w-4" />
+                      Set Priority
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuRadioGroup
+                        value={priorityKey}
+                        onValueChange={handlePriorityChange}
+                      >
+                        {priorityList.map((p) => {
+                          const key = Object.keys(p)[0];
+                          return (
+                            <DropdownMenuRadioItem key={key} value={key}>
+                              <span
+                                className={cn(
+                                  "mr-2 h-2 w-2 rounded-full",
+                                  key === "low" && "bg-green-500",
+                                  key === "medium" && "bg-yellow-500",
+                                  key === "high" && "bg-red-500"
+                                )}
+                              />
+                              <span className="capitalize">{key}</span>
+                            </DropdownMenuRadioItem>
+                          );
+                        })}
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
 
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <Tag className="h-4 w-4" />
-                    Set Label
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup
-                      value={item.tag}
-                      onValueChange={handleTagChange}
-                    >
-                      {tagsList.map((tag) => (
-                        <DropdownMenuRadioItem key={tag} value={tag}>
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <Tag className="h-4 w-4" />
+                      Set Labels
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      {allTagOptions.map((tag) => (
+                        <DropdownMenuCheckboxItem
+                          key={tag}
+                          checked={effectiveTags.includes(tag)}
+                          onCheckedChange={(checked) =>
+                            handleTagToggle(tag, checked as boolean)
+                          }
+                        >
                           {tag}
-                        </DropdownMenuRadioItem>
+                        </DropdownMenuCheckboxItem>
                       ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
 
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <Palette className="h-4 w-4" />
-                    Change Color
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuLabel className="text-xs">
-                      Pick a color
-                    </DropdownMenuLabel>
-                    <div className="flex gap-1 px-2 py-1.5">
-                      {colorPalette.map((c) => (
-                        <button
-                          key={c.value}
-                          className={cn(
-                            "h-6 w-6 rounded-full border-2 transition-all hover:scale-110",
-                            item.bgColor === c.value
-                              ? "border-ring ring-2 ring-ring"
-                              : "border-transparent"
-                          )}
-                          style={{ backgroundColor: c.value }}
-                          onClick={() => handleColorChange(c.value)}
-                        />
-                      ))}
-                    </div>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                  {folders.length > 0 && (
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        <FolderIcon className="h-4 w-4" />
+                        Move to Folder
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent>
+                        <DropdownMenuRadioGroup
+                          value={item.folderId || ""}
+                          onValueChange={(value) =>
+                            moveNoteToFolder(item._id, value || null)
+                          }
+                        >
+                          <DropdownMenuRadioItem value="">
+                            No folder
+                          </DropdownMenuRadioItem>
+                          {folders.map((f) => (
+                            <DropdownMenuRadioItem key={f._id} value={f._id}>
+                              {f.name}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                  )}
 
-                <DropdownMenuSeparator />
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <Palette className="h-4 w-4" />
+                      Change Color
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuLabel className="text-xs">
+                        Pick a color
+                      </DropdownMenuLabel>
+                      <div className="flex gap-1 px-2 py-1.5">
+                        {colorPalette.map((c) => (
+                          <button
+                            key={c.value}
+                            className={cn(
+                              "h-6 w-6 rounded-full border-2 transition-all hover:scale-110",
+                              item.bgColor === c.value
+                                ? "border-ring ring-2 ring-ring"
+                                : "border-transparent"
+                            )}
+                            style={{ backgroundColor: c.value }}
+                            onClick={() => handleColorChange(c.value)}
+                          />
+                        ))}
+                      </div>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
 
-                <DropdownMenuItem onClick={() => archiveNote(item)}>
-                  <Archive className="h-4 w-4" />
-                  Archive
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => moveToTrash(item)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Move to Trash
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem onClick={() => archiveNote(item)}>
+                    <Archive className="h-4 w-4" />
+                    Archive
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => moveToTrash(item)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Move to Trash
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </CardHeader>
 
@@ -246,11 +321,11 @@ export function SingleNoteCard({ item }: Props) {
         </CardContent>
 
         <CardFooter className="flex flex-wrap items-center gap-1.5 pt-2 pb-3">
-          {item.tag !== "" && (
-            <Badge variant="secondary" className="text-xs">
-              {item.tag}
+          {effectiveTags.map((t) => (
+            <Badge key={t} variant="secondary" className="text-xs">
+              {t}
             </Badge>
-          )}
+          ))}
           {priorityKey && (
             <Badge
               variant="outline"

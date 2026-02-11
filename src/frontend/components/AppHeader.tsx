@@ -32,6 +32,12 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
   const { logoutHandler } = useAuth();
   const { setIsEditable, setUserInput, userInput } = useNotes();
 
+  const showNoteActions =
+    location.pathname === "/home" ||
+    location.pathname.startsWith("/folders/") ||
+    location.pathname === "/recent" ||
+    location.pathname === "/favorites";
+
   const openNewNote = () => {
     setIsEditable(true);
     setUserInput({
@@ -41,6 +47,9 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
       bgColor: "",
       tag: "",
       priority: { low: "1" },
+      tags: [],
+      folderId: undefined,
+      favorite: false,
     });
   };
 
@@ -68,7 +77,7 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
       <div className="flex-1" />
 
       <div className="flex items-center gap-2">
-        {location.pathname === "/home" && (
+        {showNoteActions && (
           <Popover>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -87,7 +96,7 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
           </Popover>
         )}
 
-        {location.pathname === "/home" && (
+        {showNoteActions && (
           <Button size="sm" onClick={openNewNote}>
             <Plus className="h-4 w-4" />
             New Note

@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import type { Note } from "../../types";
+import { getEffectiveTags } from "../utils/getEffectiveTags";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +28,7 @@ export function NoteViewDialog({
   onEdit,
 }: NoteViewDialogProps) {
   const priorityKey = note.priority ? Object.keys(note.priority)[0] : "";
+  const tags = getEffectiveTags(note);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -38,14 +40,16 @@ export function NoteViewDialog({
           <DialogTitle className="text-xl leading-snug pr-8">
             {note.title}
           </DialogTitle>
-          <DialogDescription className="flex items-center gap-2 pt-1">
+          <DialogDescription className="flex flex-wrap items-center gap-2 pt-1">
             <span>{note.createdAt}</span>
-            {note.tag && (
+            {tags.length > 0 && (
               <>
                 <span className="text-border">|</span>
-                <Badge variant="secondary" className="text-xs">
-                  {note.tag}
-                </Badge>
+                {tags.map((t) => (
+                  <Badge key={t} variant="secondary" className="text-xs">
+                    {t}
+                  </Badge>
+                ))}
               </>
             )}
             {priorityKey && (

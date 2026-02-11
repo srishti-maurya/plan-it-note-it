@@ -9,3 +9,6 @@ export { ColorPalette } from "./ColorPalette";
 export { LabelList } from "./LabelList";
 export { Tags } from "./Tags";
 export { PriorityList } from "./PriorityList";
+export { FolderTree } from "./FolderTree";
+export { FolderDialog } from "./FolderDialog";
+export { TagInput } from "./TagInput";

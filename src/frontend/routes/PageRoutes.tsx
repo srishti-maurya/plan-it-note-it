@@ -12,6 +12,9 @@ import {
   Labels,
   Trash,
   NotFound,
+  FolderView,
+  Recent,
+  Favorites,
 } from "../pages";
 
 export function PageRoutes() {
@@ -30,6 +33,9 @@ export function PageRoutes() {
           <Route path="labels" element={<Labels />} />
           <Route path="archive" element={<Archive />} />
           <Route path="trash" element={<Trash />} />
+          <Route path="folders/:folderId" element={<FolderView />} />
+          <Route path="recent" element={<Recent />} />
+          <Route path="favorites" element={<Favorites />} />
         </Route>
       </Route>
     </Routes>

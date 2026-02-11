@@ -51,6 +51,31 @@ export const restoreFromArchivesHandler = function (this: any, schema: any, requ
   return new Response(200, {}, { archives: user.archives, notes: user.notes });
 };
 
+export const updateArchiveHandler = function (this: any, schema: any, request: any) {
+  const user = requiresAuth.call(this, request);
+  try {
+    if (!user) {
+      return new Response(
+        404,
+        {},
+        {
+          errors: ["The email you entered is not Registered. Not Found error"],
+        }
+      );
+    }
+    const { note } = JSON.parse(request.requestBody);
+    const { noteId } = request.params;
+    const noteIndex = user.archives.findIndex((n: any) => n._id === noteId);
+    if (noteIndex !== -1) {
+      user.archives[noteIndex] = { ...user.archives[noteIndex], ...note };
+    }
+    this.db.users.update({ _id: user._id }, user);
+    return new Response(200, {}, { archives: user.archives });
+  } catch (error) {
+    return new Response(500, {}, { error });
+  }
+};
+
 export const moveArchiveToTrashHandler = function (this: any, schema: any, request: any) {
   const user = requiresAuth.call(this, request);
   try {

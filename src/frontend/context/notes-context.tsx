@@ -18,8 +18,11 @@ import {
   restoreToast,
   trashedToast,
 } from "../utils/toasts";
+import { getEffectiveTags } from "../utils/getEffectiveTags";
+import { tagsList } from "../components/Tags";
 import type {
   Note,
+  Folder,
   NotesContextType,
   NotesState,
   NotesAction,
@@ -44,6 +47,8 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   const [isEditable, setIsEditable] = useState(false);
   const [editNoteCard, setEditNoteCard] = useState(false);
   const [usedTags, setUsedTags] = useState<string[]>([]);
+  const [customTags, setCustomTags] = useState<string[]>([]);
+  const [folders, setFolders] = useState<Folder[]>([]);
   const [currNoteId, setcurrNoteId] = useState<string | number>(0);
   const [notesOrder, setNotesOrder] = useState<NotesOrder>({ sort: "", filter: "" });
   const [userInput, setUserInput] = useState<UserInput>({
@@ -53,6 +58,9 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     bgColor: "",
     tag: "",
     priority: { low: "1" },
+    tags: [],
+    folderId: undefined,
+    favorite: false,
   });
 
   function reducerFun(state: NotesState, { type, payload }: NotesAction): NotesState {
@@ -84,25 +92,48 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     trashList: [],
   });
 
+  // Fetch notes on login
   useEffect(() => {
     if (isLoggedIn) {
       (async function () {
         try {
           const response = await axios.get("/api/notes", {
-            headers: {
-              authorization: token,
-            },
+            headers: { authorization: token },
           });
-          dispatch({
-            type: "SET_LIST",
-            payload: response.data.notes,
-          });
+          dispatch({ type: "SET_LIST", payload: response.data.notes });
         } catch (error) {
           console.error("ERROR", error);
         }
       })();
     }
   }, [isLoggedIn, token]);
+
+  // Fetch folders on login
+  useEffect(() => {
+    if (isLoggedIn) {
+      (async function () {
+        try {
+          const response = await axios.get("/api/folders", {
+            headers: { authorization: token },
+          });
+          setFolders(response.data.folders || []);
+        } catch (error) {
+          console.error("ERROR", error);
+        }
+      })();
+    }
+  }, [isLoggedIn, token]);
+
+  // Derive usedTags and customTags from notesList
+  useEffect(() => {
+    const allTags = new Set<string>();
+    state.notesList.forEach((note) => {
+      getEffectiveTags(note).forEach((t) => allTags.add(t));
+    });
+    const tagsArray = Array.from(allTags);
+    setUsedTags(tagsArray);
+    setCustomTags(tagsArray.filter((t) => !tagsList.includes(t)));
+  }, [state.notesList]);
 
   function addNewNote(note: UserInput) {
     setUserInput({
@@ -112,6 +143,9 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       bgColor: "",
       tag: "",
       priority: { low: "1" },
+      tags: [],
+      folderId: undefined,
+      favorite: false,
     });
     if (isLoggedIn) {
       (async function () {
@@ -119,17 +153,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
           const response = await axios.post(
             "/api/notes",
             { note },
-            {
-              headers: {
-                authorization: token,
-              },
-            }
+            { headers: { authorization: token } }
           );
           addNewToast();
-          dispatch({
-            type: "SET_LIST",
-            payload: response.data.notes,
-          });
+          dispatch({ type: "SET_LIST", payload: response.data.notes });
         } catch (error) {
           console.error("ERROR", error);
         }
@@ -145,21 +172,11 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         const response = await axios.post(
           `/api/notes/trash/${note._id}`,
           { note },
-          {
-            headers: {
-              authorization: token,
-            },
-          }
+          { headers: { authorization: token } }
         );
         trashedToast();
-        dispatch({
-          type: "SET_LIST",
-          payload: response.data.notes,
-        });
-        dispatch({
-          type: "SET_TRASH_LIST",
-          payload: response.data.trash,
-        });
+        dispatch({ type: "SET_LIST", payload: response.data.notes });
+        dispatch({ type: "SET_TRASH_LIST", payload: response.data.trash });
       } catch (error) {
         console.error("ERROR", error);
       }
@@ -180,19 +197,15 @@ export function NotesProvider({ children }: { children: ReactNode }) {
               bgColor: currNote.bgColor,
               tag: currNote.tag,
               priority: currNote.priority,
+              tags: currNote.tags,
+              folderId: currNote.folderId ?? null,
+              favorite: currNote.favorite,
             },
           },
-          {
-            headers: {
-              authorization: token,
-            },
-          }
+          { headers: { authorization: token } }
         );
         editToast();
-        dispatch({
-          type: "SET_LIST",
-          payload: response.data.notes,
-        });
+        dispatch({ type: "SET_LIST", payload: response.data.notes });
       } catch (error) {
         console.error("ERROR", error);
       }
@@ -206,17 +219,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         const response = await axios.post(
           `/api/notes/archives/${note._id}`,
           { note },
-          {
-            headers: {
-              authorization: token,
-            },
-          }
+          { headers: { authorization: token } }
         );
         archiveToast();
-        dispatch({
-          type: "SET_ARCHIVE_LIST",
-          payload: response.data,
-        });
+        dispatch({ type: "SET_ARCHIVE_LIST", payload: response.data });
       } catch (error) {
         console.error("ERROR", error);
       }
@@ -229,17 +235,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         const response = await axios.post(
           `/api/archives/restore/${note._id}`,
           { note },
-          {
-            headers: {
-              authorization: token,
-            },
-          }
+          { headers: { authorization: token } }
         );
         unarchiveToast();
-        dispatch({
-          type: "SET_ARCHIVE_LIST",
-          payload: response.data,
-        });
+        dispatch({ type: "SET_ARCHIVE_LIST", payload: response.data });
       } catch (error) {
         console.error("ERROR", error);
       }
@@ -252,21 +251,11 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         const response = await axios.post(
           `/api/archives/trash/${note._id}`,
           { note },
-          {
-            headers: {
-              authorization: token,
-            },
-          }
+          { headers: { authorization: token } }
         );
         trashedToast();
-        dispatch({
-          type: "SET_TRASH_LIST",
-          payload: response.data.trash,
-        });
-        dispatch({
-          type: "SET_ARCHIVE_LIST",
-          payload: response.data,
-        });
+        dispatch({ type: "SET_TRASH_LIST", payload: response.data.trash });
+        dispatch({ type: "SET_ARCHIVE_LIST", payload: response.data });
       } catch (error) {
         console.error("ERROR", error);
       }
@@ -278,20 +267,12 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       try {
         const response = await axios.post(
           `/api/trash/restore/${note._id}`,
-          {
-            note,
-          },
+          { note },
           { headers: { authorization: token } }
         );
         restoreToast();
-        dispatch({
-          type: "SET_TRASH_LIST",
-          payload: response.data.trash,
-        });
-        dispatch({
-          type: "SET_LIST",
-          payload: response.data.notes,
-        });
+        dispatch({ type: "SET_TRASH_LIST", payload: response.data.trash });
+        dispatch({ type: "SET_LIST", payload: response.data.notes });
       } catch (error) {
         console.error("ERROR", error);
       }
@@ -305,14 +286,96 @@ export function NotesProvider({ children }: { children: ReactNode }) {
           headers: { authorization: token },
         });
         deletedToast();
+        dispatch({ type: "SET_TRASH_LIST", payload: response.data.trash });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  // Folder CRUD
+  function addFolder(name: string, parentId: string | null) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          "/api/folders",
+          { folder: { name, parentId } },
+          { headers: { authorization: token } }
+        );
+        setFolders(response.data.folders);
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function renameFolder(folderId: string, name: string) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/folders/${folderId}`,
+          { folder: { name } },
+          { headers: { authorization: token } }
+        );
+        setFolders(response.data.folders);
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function deleteFolder(folderId: string) {
+    (async function () {
+      try {
+        const response = await axios.delete(`/api/folders/${folderId}`, {
+          headers: { authorization: token },
+        });
+        setFolders(response.data.folders);
+        dispatch({ type: "SET_LIST", payload: response.data.notes });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function toggleFavorite(note: Note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/notes/${note._id}`,
+          { note: { ...note, favorite: !note.favorite } },
+          { headers: { authorization: token } }
+        );
+        dispatch({ type: "SET_LIST", payload: response.data.notes });
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  }
+
+  function toggleArchiveFavorite(note: Note) {
+    (async function () {
+      try {
+        const response = await axios.post(
+          `/api/archives/${note._id}`,
+          { note: { ...note, favorite: !note.favorite } },
+          { headers: { authorization: token } }
+        );
         dispatch({
-          type: "SET_TRASH_LIST",
-          payload: response.data.trash,
+          type: "SET_ARCHIVE_LIST",
+          payload: { archives: response.data.archives, notes: state.notesList },
         });
       } catch (error) {
         console.error("ERROR", error);
       }
     })();
+  }
+
+  function moveNoteToFolder(noteId: string, folderId: string | null) {
+    const matchedNote = state.notesList.find((ele) => ele._id === noteId);
+    if (matchedNote) {
+      editNote({ ...matchedNote, folderId: folderId || undefined }, noteId);
+    }
   }
 
   return (
@@ -341,6 +404,16 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         setUsedTags,
         notesOrder,
         setNotesOrder,
+        folders,
+        setFolders,
+        addFolder,
+        renameFolder,
+        deleteFolder,
+        moveNoteToFolder,
+        toggleFavorite,
+        toggleArchiveFavorite,
+        customTags,
+        setCustomTags,
       }}
     >
       {children}

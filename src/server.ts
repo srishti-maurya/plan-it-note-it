@@ -4,6 +4,7 @@ import {
   getAllArchivedNotesHandler,
   restoreFromArchivesHandler,
   moveArchiveToTrashHandler,
+  updateArchiveHandler,
 } from "./backend/controllers/ArchiveController";
 import {
   loginHandler,
@@ -22,6 +23,12 @@ import {
   deleteFromTrashHandler,
   restoreFromTrashHandler,
 } from "./backend/controllers/TrashController";
+import {
+  getAllFoldersHandler,
+  createFolderHandler,
+  updateFolderHandler,
+  deleteFolderHandler,
+} from "./backend/controllers/FoldersController";
 import { users } from "./backend/db/users";
 
 export function makeServer({ environment = "development" } = {}) {
@@ -43,6 +50,7 @@ export function makeServer({ environment = "development" } = {}) {
           notes: [],
           archives: [],
           trash: [],
+          folders: [],
         } as Record<string, unknown>)
       );
     },
@@ -60,6 +68,7 @@ export function makeServer({ environment = "development" } = {}) {
       this.post("/notes/trash/:noteId", moveNoteToTrashHandler.bind(this));
 
       this.get("/archives", getAllArchivedNotesHandler.bind(this));
+      this.post("/archives/:noteId", updateArchiveHandler.bind(this));
       this.post(
         "/archives/restore/:noteId",
         restoreFromArchivesHandler.bind(this)
@@ -72,6 +81,11 @@ export function makeServer({ environment = "development" } = {}) {
         "/archives/delete/:noteId",
         deleteFromArchivesHandler.bind(this)
       );
+
+      this.get("/folders", getAllFoldersHandler.bind(this));
+      this.post("/folders", createFolderHandler.bind(this));
+      this.post("/folders/:folderId", updateFolderHandler.bind(this));
+      this.delete("/folders/:folderId", deleteFolderHandler.bind(this));
 
       this.get("/trash", getAllTrashedNotesHandler.bind(this));
       this.delete("/trash/delete/:noteId", deleteFromTrashHandler.bind(this));

@@ -2,6 +2,12 @@ export interface Priority {
   [key: string]: string;
 }
 
+export interface Folder {
+  _id: string;
+  name: string;
+  parentId: string | null;
+}
+
 export interface Note {
   _id: string;
   title: string;
@@ -10,7 +16,9 @@ export interface Note {
   bgColor: string;
   tag: string;
   priority: Priority;
-  tags?: string[];
+  tags: string[];
+  folderId?: string;
+  favorite?: boolean;
 }
 
 export interface User {
@@ -24,6 +32,7 @@ export interface User {
   notes: Note[];
   archives: Note[];
   trash: Note[];
+  folders: Folder[];
 }
 
 export interface UserInput {
@@ -33,6 +42,9 @@ export interface UserInput {
   bgColor: string;
   tag: string;
   priority: Priority;
+  tags: string[];
+  folderId?: string;
+  favorite?: boolean;
 }
 
 export interface LoginInput {
@@ -104,4 +116,14 @@ export interface NotesContextType {
   setUsedTags: React.Dispatch<React.SetStateAction<string[]>>;
   notesOrder: NotesOrder;
   setNotesOrder: React.Dispatch<React.SetStateAction<NotesOrder>>;
+  folders: Folder[];
+  setFolders: React.Dispatch<React.SetStateAction<Folder[]>>;
+  addFolder: (name: string, parentId: string | null) => void;
+  renameFolder: (folderId: string, name: string) => void;
+  deleteFolder: (folderId: string) => void;
+  moveNoteToFolder: (noteId: string, folderId: string | null) => void;
+  toggleFavorite: (note: Note) => void;
+  toggleArchiveFavorite: (note: Note) => void;
+  customTags: string[];
+  setCustomTags: React.Dispatch<React.SetStateAction<string[]>>;
 }

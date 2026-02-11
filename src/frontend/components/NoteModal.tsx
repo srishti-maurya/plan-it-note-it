@@ -1,6 +1,7 @@
 import { useNotes } from "../context";
 import { tagsList } from "./Tags";
 import { priorityList } from "./PriorityList";
+import { TagInput } from "./TagInput";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
+import type { Folder } from "../../types";
 
 const colorPalette = [
   { label: "Lavender", value: "#E8E0F0" },
@@ -24,6 +26,20 @@ const colorPalette = [
   { label: "Peach", value: "#F0E0D0" },
   { label: "Stone", value: "#E8E6E3" },
 ];
+
+function flattenFolders(
+  folders: Folder[],
+  parentId: string | null,
+  depth: number
+): (Folder & { depth: number })[] {
+  const result: (Folder & { depth: number })[] = [];
+  const children = folders.filter((f) => f.parentId === parentId);
+  for (const child of children) {
+    result.push({ ...child, depth });
+    result.push(...flattenFolders(folders, child._id, depth + 1));
+  }
+  return result;
+}
 
 export function NoteModal() {
   const {
@@ -37,11 +53,15 @@ export function NoteModal() {
     userInput,
     setUserInput,
     currNoteId,
+    folders,
+    customTags,
   } = useNotes();
 
   const priorityKey = userInput.priority
     ? Object.keys(userInput.priority)[0]
     : "low";
+
+  const flattenedFolders = flattenFolders(folders, null, 0);
 
   return (
     <Dialog
@@ -113,20 +133,37 @@ export function NoteModal() {
             </ToggleGroup>
           </div>
 
-          {/* Tag select */}
+          {/* Tags (multi-select) */}
           <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">Label</Label>
+            <Label className="text-xs text-muted-foreground">Labels</Label>
+            <TagInput
+              tags={userInput.tags || []}
+              onChange={(tags) =>
+                setUserInput({ ...userInput, tags, tag: tags[0] || "" })
+              }
+              presets={tagsList}
+              suggestions={customTags}
+            />
+          </div>
+
+          {/* Folder picker */}
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Folder</Label>
             <select
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              value={userInput.tag}
+              value={userInput.folderId || ""}
               onChange={(e) =>
-                setUserInput({ ...userInput, tag: e.target.value })
+                setUserInput({
+                  ...userInput,
+                  folderId: e.target.value || undefined,
+                })
               }
             >
-              <option value="">None</option>
-              {tagsList.map((tag) => (
-                <option key={tag} value={tag}>
-                  {tag}
+              <option value="">No folder</option>
+              {flattenedFolders.map((f) => (
+                <option key={f._id} value={f._id}>
+                  {"\u00A0\u00A0".repeat(f.depth)}
+                  {f.name}
                 </option>
               ))}
             </select>

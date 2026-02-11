@@ -1,12 +1,13 @@
 import { Tags } from "lucide-react";
 import { useNotes } from "../context";
 import { SingleNoteCard } from "./SingleNoteCard";
+import { getEffectiveTags } from "../utils/getEffectiveTags";
 import { Separator } from "@/components/ui/separator";
 
 export function LabelList() {
   const { state, usedTags } = useNotes();
   const uniqueTags = usedTags.filter(
-    (item, index, usedTagsArr) => usedTagsArr.indexOf(item) === index
+    (item, index, arr) => arr.indexOf(item) === index
   );
 
   if (uniqueTags.length === 0) {
@@ -22,8 +23,8 @@ export function LabelList() {
   return (
     <div className="space-y-8">
       {uniqueTags.map((currTag) => {
-        const filteredNotes = state.notesList?.filter(
-          (currItem) => currItem.tag === currTag
+        const filteredNotes = state.notesList?.filter((currItem) =>
+          getEffectiveTags(currItem).includes(currTag)
         );
         if (filteredNotes.length === 0) return null;
         return (
