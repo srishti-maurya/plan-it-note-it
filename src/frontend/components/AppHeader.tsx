@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Menu, SlidersHorizontal, Plus, LogOut, StickyNote } from "lucide-react";
+import { Menu, SlidersHorizontal, Plus, LogOut, StickyNote, Search, X } from "lucide-react";
 import { useNotes, useAuth } from "../context";
 import { FilterList } from "./FilterList";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverTrigger,
@@ -30,7 +32,12 @@ interface AppHeaderProps {
 export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
   const location = useLocation();
   const { logoutHandler } = useAuth();
-  const { setIsEditable, setUserInput, userInput } = useNotes();
+  const { setIsEditable, setUserInput, userInput, searchQuery, setSearchQuery } = useNotes();
+
+  // Clear search on navigation
+  useEffect(() => {
+    setSearchQuery("");
+  }, [location.pathname, setSearchQuery]);
 
   const showNoteActions =
     location.pathname === "/home" ||
@@ -74,7 +81,30 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
         <span className="text-lg font-semibold tracking-tight">PlanIt</span>
       </div>
 
-      <div className="flex-1" />
+      {showNoteActions ? (
+        <div className="flex-1 flex justify-center px-4">
+          <div className="relative w-full max-w-md">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search notes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8 pr-8 h-9"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1" />
+      )}
 
       <div className="flex items-center gap-2">
         {showNoteActions && (

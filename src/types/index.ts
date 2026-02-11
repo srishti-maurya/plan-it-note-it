@@ -126,4 +126,6 @@ export interface NotesContextType {
   toggleArchiveFavorite: (note: Note) => void;
   customTags: string[];
   setCustomTags: React.Dispatch<React.SetStateAction<string[]>>;
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }

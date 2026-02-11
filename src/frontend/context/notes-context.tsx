@@ -50,6 +50,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   const [customTags, setCustomTags] = useState<string[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [currNoteId, setcurrNoteId] = useState<string | number>(0);
+  const [searchQuery, setSearchQuery] = useState("");
   const [notesOrder, setNotesOrder] = useState<NotesOrder>({ sort: "", filter: "" });
   const [userInput, setUserInput] = useState<UserInput>({
     title: "",
@@ -414,6 +415,8 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         toggleArchiveFavorite,
         customTags,
         setCustomTags,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       {children}

@@ -41,6 +41,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { stripHtml } from "@/lib/strip-html";
+import { HighlightText } from "@/components/ui/highlight-text";
+import type { SearchMatchIndices } from "@/lib/use-search-notes";
 
 const colorPalette = [
   { label: "Lavender", value: "#E8E0F0" },
@@ -53,9 +55,10 @@ const colorPalette = [
 
 interface Props {
   item: Note;
+  searchMatches?: SearchMatchIndices | null;
 }
 
-export function SingleNoteCard({ item }: Props) {
+export function SingleNoteCard({ item, searchMatches }: Props) {
   const [viewOpen, setViewOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuClosedAt = useRef(0);
@@ -74,6 +77,7 @@ export function SingleNoteCard({ item }: Props) {
     moveNoteToFolder,
     folders,
     customTags,
+    searchQuery,
   } = useNotes();
 
   const matchedNote = state.notesList.find((ele) => ele._id === item._id);
@@ -140,7 +144,11 @@ export function SingleNoteCard({ item }: Props) {
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
             <h3 className="flex-1 font-semibold text-sm leading-tight">
-              {item.title}
+              {searchMatches?.titleIndices.length ? (
+                <HighlightText text={item.title} indices={searchMatches.titleIndices} />
+              ) : (
+                item.title
+              )}
             </h3>
             <div className="flex items-center gap-0.5 shrink-0">
               <Button
@@ -316,16 +324,33 @@ export function SingleNoteCard({ item }: Props) {
 
         <CardContent className="pb-2">
           <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
-            {stripHtml(item.note)}
+            {searchMatches?.bodyIndices.length ? (
+              <HighlightText text={stripHtml(item.note)} indices={searchMatches.bodyIndices} />
+            ) : (
+              stripHtml(item.note)
+            )}
           </p>
         </CardContent>
 
         <CardFooter className="flex flex-wrap items-center gap-1.5 pt-2 pb-3">
-          {effectiveTags.map((t) => (
-            <Badge key={t} variant="secondary" className="text-xs">
-              {t}
-            </Badge>
-          ))}
+          {effectiveTags.map((t) => {
+            const tagMatch =
+              searchMatches &&
+              searchQuery.trim().length > 0 &&
+              t.toLowerCase().includes(searchQuery.trim().toLowerCase());
+            return (
+              <Badge
+                key={t}
+                variant="secondary"
+                className={cn(
+                  "text-xs",
+                  tagMatch && "ring-2 ring-yellow-400/50"
+                )}
+              >
+                {t}
+              </Badge>
+            );
+          })}
           {priorityKey && (
             <Badge
               variant="outline"
