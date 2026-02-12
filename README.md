@@ -20,6 +20,22 @@ Your all-in-one productivity app — notes, habits, and journaling in one place.
   </p>
 </div>
 
+## Preview
+
+### Landing Page
+![Landing Page](./screenshots/landing_page.png)
+
+### Notes
+![Notes](./screenshots/notes.png)
+
+### Habit Tracker
+![Habit Tracker](./screenshots/habbit_streak.png)
+
+### Journal
+![Journal](./screenshots/journal.png)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Features
 
 ### Notes
