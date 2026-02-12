@@ -1,12 +1,12 @@
 <div id="top"></div>
 <div align="center">
- 
+
    <a href="https://github.com/srishti-maurya/plan-it-note-it/tree/dev">
  <img src="./src/frontend/assets/logo/logo.png" alt="Logo" height="100">
   </a>
-   <h3 align="center">Plan it, Note it - Notes Taking App</h3>
+   <h3 align="center">PlanIt NoteIt</h3>
   <p align="center">
-Are you planning to make list or notes? We've got your back!.
+Your all-in-one productivity app — notes, habits, and journaling in one place.
   </p>
     <br />
     <a href="https://github.com/srishti-maurya/plan-it-note-it/tree/dev"><strong>Explore the code »</strong></a>
@@ -22,38 +22,81 @@ Are you planning to make list or notes? We've got your back!.
 
 ## Features
 
-- Landing page 
-- Add a new note
-- Edit & Delete Note
-- Filter & Sort by date, priority
-- Change Card Color
-- Add Tags to notes
-- Archive Notes
-- Delete Notes
-- Authentication
-- Toasts 
+### Notes
+- Create, edit, and delete notes with a rich text editor (TipTap)
+- Organize notes into nested folders
+- Color-coded cards
+- Tag and label system with custom tags
+- Priority levels with filter and sort (by date, priority)
+- Archive and trash with restore support
+- Favorite / pin notes
+- Full-text search across all notes
+
+### Habit Tracker
+- Create habits with custom icons (25+ lucide icons to choose from)
+- Flexible frequency: daily, weekly, or custom days of the week
+- Set start date, optional reminder time, and streak freeze (1-day grace period)
+- Three-state completion: mark done, skip, or clear — per day
+- Current streak and longest streak tracking with automatic persistence
+- 30-day completion percentage per habit
+- Detailed insights panel per habit:
+  - GitHub-style activity heatmap (26 weeks)
+  - Weekly progress bar chart (12 weeks, powered by Recharts)
+  - Stats cards for current streak, longest streak, and completion rate
+- Full create/edit dialog accessible from sidebar, header, and habit page
+
+### Journal
+- Daily guided journal with prompts: mood, gratitude, goals, and free-form (rich text)
+- Calendar view in sidebar with month navigation
+- Mood-based color indicators on calendar days (keyword detection)
+- Tooltip previews showing date and detected mood
+- Click any past date to view that day's entry
+- Recent entries quick-access list
+- View/edit mode toggle with save confirmation toast
+- Color legend for mood categories
+
+### General
+- Section switcher: seamlessly switch between Notes, Habits, and Journal
+- Light / Dark / System theme support
+- Responsive layout with collapsible sidebar (desktop) and sheet drawer (mobile)
+- Authentication (signup / login / logout) with toast notifications
+- MirageJS mock backend with full CRUD API
+
+## Built With
+
+- **React** with TypeScript
+- **React Router v6** for routing
+- **React Context API** + useReducer for state management
+- **Vite** for build tooling
+- **Tailwind CSS v4** for styling
+- **Radix UI** primitives (Dialog, Popover, Tabs, RadioGroup, ToggleGroup, Tooltip, DropdownMenu)
+- **shadcn/ui** component library
+- **TipTap** rich text editor
+- **Recharts** for data visualization
+- **Lucide React** for icons
+- **dayjs** for date handling
+- **MirageJS** for mock backend
+- **Sonner** for toast notifications
+- **Axios** for HTTP requests
+
+## Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/srishti-maurya/plan-it-note-it.git
+cd plan-it-note-it
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-## Built using
-
-- ReactJS
-- React Router v6
-- React Context API and useReducer
-- MockBee
-- [Plan it, Use it](https://develop--planit-useit.netlify.app/) - CSS Component Library
-- React Hot Toast
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-## Preview 
-![landingpage](https://user-images.githubusercontent.com/39724354/163732023-326e7c66-6c9c-4d1d-80ea-0749d9df49c9.png)
-![home](https://user-images.githubusercontent.com/39724354/163732062-af971f45-372d-4c87-af0d-15be64b63fe2.png)
-
-
-## E-Commerce Backend
-
-This folder contains the Mock Backend created for Notes App. It contains different API end-points and database configuration for building Notes; so that we can focus on building Frontend.
 
 ## Contributing
 
@@ -72,6 +115,6 @@ Don't forget to give the project a star! Thanks again!
 
 ## Contact
 
-Your Name - [@SrishtiMaurya1](https://twitter.com/SrishtiMaurya1?s=09) - srishti22maurya@gmail.com
+Srishti Maurya - [@SrishtiMaurya1](https://twitter.com/SrishtiMaurya1?s=09) - srishti22maurya@gmail.com
 
 <p align="right">(<a href="#top">back to top</a>)</p>

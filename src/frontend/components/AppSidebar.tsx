@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Home, Tags, Archive, Trash2, Clock, Star, FolderIcon, Plus } from "lucide-react";
-import { useNotes } from "../context";
+import { Home, Tags, Archive, Trash2, Clock, Star, FolderIcon, Plus, StickyNote, ListChecks, BookOpen } from "lucide-react";
+import { useNotes, useSection } from "../context";
 import { FolderTree } from "./FolderTree";
 import { FolderDialog } from "./FolderDialog";
+import { HabitsSidebarContent } from "./HabitsSidebarContent";
+import { JournalSidebarContent } from "./JournalSidebarContent";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import type { AppSection } from "../../types";
 
 const mainNavItems = [
   { to: "/home", label: "Home", icon: Home, countKey: "/home" },
@@ -20,12 +24,19 @@ const bottomNavItems = [
   { to: "/trash", label: "Trash", icon: Trash2, countKey: "/trash" },
 ];
 
+const sectionTabs: { value: AppSection; label: string; icon: typeof StickyNote }[] = [
+  { value: "notes", label: "Notes", icon: StickyNote },
+  { value: "habits", label: "Habits", icon: ListChecks },
+  { value: "journal", label: "Journal", icon: BookOpen },
+];
+
 interface AppSidebarProps {
   collapsed?: boolean;
 }
 
 export function AppSidebar({ collapsed = false }: AppSidebarProps) {
   const { state, folders, addFolder } = useNotes();
+  const { activeSection, setActiveSection } = useSection();
   const [folderDialogOpen, setFolderDialogOpen] = useState(false);
 
   const counts: Record<string, number> = {
@@ -69,59 +80,107 @@ export function AppSidebar({ collapsed = false }: AppSidebarProps) {
   );
 
   return (
-    <div className="flex flex-col gap-1 p-3">
-      {/* Main nav */}
-      {mainNavItems.map(renderNavItem)}
-
-      <Separator className="my-2" />
-
-      {/* Folders section */}
-      <div className="flex items-center justify-between px-3 py-1">
-        {!collapsed && (
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Folders
-          </span>
+    <div className="flex h-full flex-col gap-1 p-3">
+      {/* Section tabs */}
+      <div className="shrink-0">
+        {collapsed ? (
+          <div className="flex flex-col items-center gap-1 mb-2">
+            {sectionTabs.map(({ value, icon: Icon }) => (
+              <Button
+                key={value}
+                variant={activeSection === value ? "secondary" : "ghost"}
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => setActiveSection(value)}
+              >
+                <Icon className="h-4 w-4" />
+              </Button>
+            ))}
+          </div>
+        ) : (
+          <Tabs value={activeSection} onValueChange={(v) => setActiveSection(v as AppSection)} className="mb-2">
+            <TabsList className="w-full">
+              {sectionTabs.map(({ value, label, icon: Icon }) => (
+                <TabsTrigger key={value} value={value} className="flex-1 gap-1.5 text-xs">
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         )}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6"
-          onClick={() => setFolderDialogOpen(true)}
-        >
-          <Plus className="h-3.5 w-3.5" />
-        </Button>
+
+        <Separator className="mb-1" />
       </div>
 
-      {folders.length > 0 && (
-        <FolderTree
-          folders={folders}
-          parentId={null}
-          level={0}
-          collapsed={collapsed}
-        />
-      )}
+      {/* Section content — scrollable */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+        {activeSection === "notes" && (
+          <div className="flex flex-col gap-1">
+            {mainNavItems.map(renderNavItem)}
 
-      {folders.length === 0 && !collapsed && (
-        <p className="px-3 py-2 text-xs text-muted-foreground">
-          No folders yet
-        </p>
-      )}
+            <Separator className="my-2" />
 
-      <Separator className="my-2" />
+            {/* Folders section */}
+            <div className={cn(
+              "flex items-center px-3 py-1",
+              collapsed ? "justify-center" : "justify-between"
+            )}>
+              {!collapsed && (
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Folders
+                </span>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={() => setFolderDialogOpen(true)}
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </Button>
+            </div>
 
-      {/* Bottom nav */}
-      {bottomNavItems.map(renderNavItem)}
+            {folders.length > 0 && (
+              <FolderTree
+                folders={folders}
+                parentId={null}
+                level={0}
+                collapsed={collapsed}
+              />
+            )}
 
-      <FolderDialog
-        open={folderDialogOpen}
-        onOpenChange={setFolderDialogOpen}
-        mode="create"
-        parentId={null}
-        onConfirm={(name) => {
-          addFolder(name, null);
-          setFolderDialogOpen(false);
-        }}
-      />
+            {folders.length === 0 && !collapsed && (
+              <p className="px-3 py-2 text-xs text-muted-foreground">
+                No folders yet
+              </p>
+            )}
+
+            <Separator className="my-2" />
+
+            {bottomNavItems.map(renderNavItem)}
+
+            <FolderDialog
+              open={folderDialogOpen}
+              onOpenChange={setFolderDialogOpen}
+              mode="create"
+              parentId={null}
+              onConfirm={(name) => {
+                addFolder(name, null);
+                setFolderDialogOpen(false);
+              }}
+            />
+          </div>
+        )}
+
+        {activeSection === "habits" && (
+          <HabitsSidebarContent collapsed={collapsed} />
+        )}
+
+        {activeSection === "journal" && (
+          <JournalSidebarContent collapsed={collapsed} />
+        )}
+      </div>
     </div>
   );
 }

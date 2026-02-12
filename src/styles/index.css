@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
@@ -90,6 +92,7 @@
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   body {

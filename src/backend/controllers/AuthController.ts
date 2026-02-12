@@ -28,6 +28,9 @@ export const signupHandler = function (this: any, schema: any, request: any) {
       archives: [],
       trash: [],
       folders: [],
+      habits: [],
+      habitCompletions: [],
+      journalEntries: [],
     };
     const createdUser = schema.users.create(newUser);
     const encodedToken = sign({ _id, email }, import.meta.env.VITE_JWT_SECRET);

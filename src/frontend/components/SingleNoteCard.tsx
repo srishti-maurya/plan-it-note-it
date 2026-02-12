@@ -42,6 +42,7 @@ import {
 import { cn } from "@/lib/utils";
 import { stripHtml } from "@/lib/strip-html";
 import { HighlightText } from "@/components/ui/highlight-text";
+import { useTheme } from "@/lib/theme-context";
 import type { SearchMatchIndices } from "@/lib/use-search-notes";
 
 const colorPalette = [
@@ -62,6 +63,8 @@ export function SingleNoteCard({ item, searchMatches }: Props) {
   const [viewOpen, setViewOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuClosedAt = useRef(0);
+
+  const { resolvedTheme } = useTheme();
 
   const {
     moveToTrash,
@@ -134,7 +137,19 @@ export function SingleNoteCard({ item, searchMatches }: Props) {
     <>
       <Card
         className="flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md break-words cursor-pointer"
-        style={{ backgroundColor: item.bgColor || undefined }}
+        style={{
+          backgroundColor: item.bgColor || undefined,
+          ...(item.bgColor && resolvedTheme === "dark"
+            ? ({
+                "--foreground": "240 10% 3.9%",
+                "--card-foreground": "240 10% 3.9%",
+                "--muted-foreground": "240 3.8% 46.1%",
+                "--secondary": "240 4.8% 95.9%",
+                "--secondary-foreground": "240 5.9% 10%",
+                "--border": "240 5.9% 90%",
+              } as React.CSSProperties)
+            : {}),
+        }}
         onClick={() => {
           // Don't open view if dropdown just closed (prevents ghost click)
           if (Date.now() - menuClosedAt.current < 300) return;

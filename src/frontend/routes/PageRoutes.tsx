@@ -15,6 +15,8 @@ import {
   FolderView,
   Recent,
   Favorites,
+  HabitsPage,
+  JournalPage,
 } from "../pages";
 
 export function PageRoutes() {
@@ -36,6 +38,8 @@ export function PageRoutes() {
           <Route path="folders/:folderId" element={<FolderView />} />
           <Route path="recent" element={<Recent />} />
           <Route path="favorites" element={<Favorites />} />
+          <Route path="habits" element={<HabitsPage />} />
+          <Route path="journal" element={<JournalPage />} />
         </Route>
       </Route>
     </Routes>

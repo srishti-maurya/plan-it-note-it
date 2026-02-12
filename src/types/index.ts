@@ -8,6 +8,59 @@ export interface Folder {
   parentId: string | null;
 }
 
+// Habit Tracker
+export type HabitFrequencyType = "daily" | "weekly" | "custom";
+
+export interface HabitFrequency {
+  type: HabitFrequencyType;
+  daysOfWeek?: number[]; // 0=Sun..6=Sat, used when type="custom"
+}
+
+export interface Habit {
+  _id: string;
+  name: string;
+  icon: string;                 // lucide icon name e.g. "Dumbbell"
+  frequency: HabitFrequency;
+  reminderTime: string | null;  // "HH:mm" or null
+  startDate: string;            // YYYY-MM-DD
+  streakFreeze: boolean;        // allow 1 missed day grace period
+  longestStreak: number;        // persisted best streak
+  createdAt: string;
+}
+
+export type CompletionStatus = "done" | "skipped";
+
+export interface HabitCompletion {
+  _id: string;
+  habitId: string;
+  date: string;                 // YYYY-MM-DD
+  status: CompletionStatus;
+}
+
+export interface HabitInput {
+  name: string;
+  icon: string;
+  frequency: HabitFrequency;
+  reminderTime: string | null;
+  startDate: string;
+  streakFreeze: boolean;
+}
+
+// Journal
+export interface JournalEntry {
+  _id: string;
+  date: string; // YYYY-MM-DD
+  responses: {
+    mood: string;
+    gratitude: string;
+    goals: string;
+    freeform: string;
+  };
+}
+
+// Section switcher
+export type AppSection = "notes" | "habits" | "journal";
+
 export interface Note {
   _id: string;
   title: string;
@@ -33,6 +86,9 @@ export interface User {
   archives: Note[];
   trash: Note[];
   folders: Folder[];
+  habits: Habit[];
+  habitCompletions: HabitCompletion[];
+  journalEntries: JournalEntry[];
 }
 
 export interface UserInput {

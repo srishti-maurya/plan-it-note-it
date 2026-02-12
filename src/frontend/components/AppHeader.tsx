@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Menu, SlidersHorizontal, Plus, LogOut, StickyNote, Search, X } from "lucide-react";
-import { useNotes, useAuth } from "../context";
+import { Menu, SlidersHorizontal, Plus, LogOut, StickyNote, Search, X, Sun, Moon, Monitor, Check } from "lucide-react";
+import { useNotes, useAuth, useSection, useHabits } from "../context";
 import { FilterList } from "./FilterList";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTheme } from "@/lib/theme-context";
 
 interface AppHeaderProps {
   onToggleSidebar: () => void;
@@ -33,6 +34,9 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
   const location = useLocation();
   const { logoutHandler } = useAuth();
   const { setIsEditable, setUserInput, userInput, searchQuery, setSearchQuery } = useNotes();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { activeSection } = useSection();
+  const { setHabitDialogOpen } = useHabits();
 
   // Clear search on navigation
   useEffect(() => {
@@ -40,10 +44,12 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
   }, [location.pathname, setSearchQuery]);
 
   const showNoteActions =
-    location.pathname === "/home" ||
-    location.pathname.startsWith("/folders/") ||
-    location.pathname === "/recent" ||
-    location.pathname === "/favorites";
+    activeSection === "notes" && (
+      location.pathname === "/home" ||
+      location.pathname.startsWith("/folders/") ||
+      location.pathname === "/recent" ||
+      location.pathname === "/favorites"
+    );
 
   const openNewNote = () => {
     setIsEditable(true);
@@ -132,6 +138,48 @@ export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
             New Note
           </Button>
         )}
+
+        {activeSection === "habits" && (
+          <Button size="sm" onClick={() => setHabitDialogOpen(true)}>
+            <Plus className="h-4 w-4" />
+            New Habit
+          </Button>
+        )}
+
+        <DropdownMenu>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  {resolvedTheme === "dark" ? (
+                    <Moon className="h-4 w-4" />
+                  ) : (
+                    <Sun className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent>Toggle theme</TooltipContent>
+          </Tooltip>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setTheme("light")}>
+              <Sun className="h-4 w-4" />
+              Light
+              {theme === "light" && <Check className="h-4 w-4 ml-auto" />}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>
+              <Moon className="h-4 w-4" />
+              Dark
+              {theme === "dark" && <Check className="h-4 w-4 ml-auto" />}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>
+              <Monitor className="h-4 w-4" />
+              System
+              {theme === "system" && <Check className="h-4 w-4 ml-auto" />}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

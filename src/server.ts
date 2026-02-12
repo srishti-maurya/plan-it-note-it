@@ -29,6 +29,18 @@ import {
   updateFolderHandler,
   deleteFolderHandler,
 } from "./backend/controllers/FoldersController";
+import {
+  getAllHabitsHandler,
+  createHabitHandler,
+  updateHabitHandler,
+  deleteHabitHandler,
+  toggleCompletionHandler,
+} from "./backend/controllers/HabitsController";
+import {
+  getAllJournalEntriesHandler,
+  saveJournalEntryHandler,
+  deleteJournalEntryHandler,
+} from "./backend/controllers/JournalController";
 import { users } from "./backend/db/users";
 
 export function makeServer({ environment = "development" } = {}) {
@@ -51,6 +63,9 @@ export function makeServer({ environment = "development" } = {}) {
           archives: [],
           trash: [],
           folders: [],
+          habits: [],
+          habitCompletions: [],
+          journalEntries: [],
         } as Record<string, unknown>)
       );
     },
@@ -90,6 +105,16 @@ export function makeServer({ environment = "development" } = {}) {
       this.get("/trash", getAllTrashedNotesHandler.bind(this));
       this.delete("/trash/delete/:noteId", deleteFromTrashHandler.bind(this));
       this.post("/trash/restore/:noteId", restoreFromTrashHandler.bind(this));
+
+      this.get("/habits", getAllHabitsHandler.bind(this));
+      this.post("/habits", createHabitHandler.bind(this));
+      this.post("/habits/complete", toggleCompletionHandler.bind(this));
+      this.post("/habits/:habitId", updateHabitHandler.bind(this));
+      this.delete("/habits/:habitId", deleteHabitHandler.bind(this));
+
+      this.get("/journal", getAllJournalEntriesHandler.bind(this));
+      this.post("/journal", saveJournalEntryHandler.bind(this));
+      this.delete("/journal/:date", deleteJournalEntryHandler.bind(this));
     },
   });
   return server;

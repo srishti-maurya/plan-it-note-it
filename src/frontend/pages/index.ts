@@ -10,3 +10,5 @@ export { NotFound } from "./NotFound/NotFound";
 export { FolderView } from "./Folders/FolderView";
 export { Recent } from "./Recent/Recent";
 export { Favorites } from "./Favorites/Favorites";
+export { HabitsPage } from "./Habits/HabitsPage";
+export { JournalPage } from "./Journal/JournalPage";

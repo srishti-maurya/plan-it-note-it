@@ -89,34 +89,37 @@ export function FolderTree({ folders, parentId, level, collapsed = false }: Fold
             <div key={folder._id}>
               <div
                 className="group flex items-center"
-                style={{ paddingLeft: `${level * 12}px` }}
+                style={collapsed ? undefined : { paddingLeft: `${level * 12}px` }}
               >
-                <button
-                  className={cn(
-                    "h-6 w-6 flex items-center justify-center shrink-0 rounded-sm hover:bg-accent",
-                    !hasKids && "invisible"
-                  )}
-                  onClick={() => toggleExpand(folder._id)}
-                >
-                  {isExpanded ? (
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  ) : (
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  )}
-                </button>
+                {!collapsed && (
+                  <button
+                    className={cn(
+                      "h-6 w-6 flex items-center justify-center shrink-0 rounded-sm hover:bg-accent",
+                      !hasKids && "invisible"
+                    )}
+                    onClick={() => toggleExpand(folder._id)}
+                  >
+                    {isExpanded ? (
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    ) : (
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                )}
 
                 <NavLink
                   to={`/folders/${folder._id}`}
                   className={({ isActive }) =>
                     cn(
-                      "flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                      "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
                       isActive
                         ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                      collapsed ? "justify-center w-full" : "flex-1"
                     )
                   }
                 >
-                  {isExpanded ? (
+                  {isExpanded && !collapsed ? (
                     <FolderOpen className="h-4 w-4 shrink-0" />
                   ) : (
                     <Folder className="h-4 w-4 shrink-0" />

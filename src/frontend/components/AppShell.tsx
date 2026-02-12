@@ -10,10 +10,13 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { useSection } from "../context";
+import { HabitDialog } from "./HabitDialog";
 
 export function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const { activeSection } = useSection();
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
@@ -26,7 +29,7 @@ export function AppShell() {
         <aside
           className={cn(
             "hidden md:flex flex-col border-r bg-sidebar transition-all duration-300",
-            sidebarOpen ? "w-64" : "w-14"
+            sidebarOpen ? "w-72" : "w-14"
           )}
         >
           <AppSidebar collapsed={!sidebarOpen} />
@@ -46,7 +49,8 @@ export function AppShell() {
       <div className="flex flex-1 flex-col overflow-hidden">
         <AppHeader onToggleSidebar={toggleSidebar} />
         <main className="flex-1 overflow-auto p-6">
-          <NoteModal />
+          {activeSection === "notes" && <NoteModal />}
+          {activeSection === "habits" && <HabitDialog />}
           <Outlet />
         </main>
       </div>
